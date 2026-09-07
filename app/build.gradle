@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace 'com.asha.demo'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId 'com.asha.demo'
-        minSdk 24
+        minSdk 26
         targetSdk 35
-        versionCode 7
-        versionName '7.0-real-health-data'
+        versionCode 8
+        versionName '8.0-real-health-data'
     }
 
     compileOptions {
