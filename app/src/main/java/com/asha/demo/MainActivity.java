@@ -1,7 +1,9 @@
 package com.asha.demo;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 public class MainActivity extends Activity {
     private WebView webView;
     private static final int VOICE_REQUEST = 7001;
+    private static final int MIC_PERMISSION_REQUEST = 7002;
+    private boolean voicePending = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,18 @@ public class MainActivity extends Activity {
 
         webView.addJavascriptInterface(new NativeBridge(), "AndroidBridge");
         webView.loadUrl("file:///android_asset/index.html");
+    }
+
+    private void launchVoiceRecognition() {
+        try {
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-IN");
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "How are you feeling?");
+            startActivityForResult(intent, VOICE_REQUEST);
+        } catch (Exception e) {
+            Toast.makeText(this, "Voice recognition is unavailable. You can type instead.", Toast.LENGTH_LONG).show();
+        }
     }
 
     public class NativeBridge {
@@ -95,16 +111,26 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void startVoiceRecognition() {
             runOnUiThread(() -> {
-                try {
-                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-IN");
-                    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "How are you feeling?");
-                    startActivityForResult(intent, VOICE_REQUEST);
-                } catch (Exception e) {
-                    Toast.makeText(MainActivity.this, "Voice recognition is unavailable. You can type instead.", Toast.LENGTH_LONG).show();
+                if (android.os.Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    voicePending = true;
+                    requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_REQUEST);
+                } else {
+                    launchVoiceRecognition();
                 }
             });
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MIC_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (voicePending) launchVoiceRecognition();
+            } else {
+                Toast.makeText(this, "Microphone permission is needed only for voice check-ins. You can still type.", Toast.LENGTH_LONG).show();
+            }
+            voicePending = false;
         }
     }
 
