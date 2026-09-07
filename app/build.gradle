@@ -10,8 +10,8 @@ android {
         applicationId 'com.asha.demo'
         minSdk 24
         targetSdk 35
-        versionCode 6
-        versionName '6.0-first-run-tutorial'
+        versionCode 7
+        versionName '7.0-real-health-data'
     }
 
     compileOptions {
@@ -25,4 +25,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+dependencies {
+    implementation 'androidx.health.connect:connect-client:1.1.0'
 }
