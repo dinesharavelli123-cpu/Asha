@@ -10,8 +10,8 @@ android {
         applicationId 'com.asha.demo'
         minSdk 24
         targetSdk 35
-        versionCode 5
-        versionName '5.0-profile-sync-demo'
+        versionCode 6
+        versionName '6.0-first-run-tutorial'
     }
 
     compileOptions {
