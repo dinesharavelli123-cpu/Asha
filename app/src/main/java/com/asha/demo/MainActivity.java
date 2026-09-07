@@ -17,6 +17,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
@@ -53,10 +55,29 @@ public class MainActivity extends Activity {
                 }
                 return false;
             }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                injectV4Features();
+            }
         });
 
         webView.addJavascriptInterface(new NativeBridge(), "AndroidBridge");
         webView.loadUrl("file:///android_asset/index.html");
+    }
+
+    private void injectV4Features() {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("features_v4.js")));
+            StringBuilder script = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) script.append(line).append('\n');
+            reader.close();
+            webView.evaluateJavascript(script.toString(), null);
+        } catch (Exception e) {
+            Toast.makeText(this, "ASHA privacy features could not load", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void launchVoiceRecognition() {
