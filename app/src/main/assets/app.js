@@ -47,3 +47,10 @@ function share(){if(window.AndroidBridge?.shareSupportMessage){AndroidBridge.sha
 let tt;function toast(t){const x=$('#toast');x.textContent=t;x.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>x.classList.remove('on'),2200)}
 const h=new Date().getHours();$('#greet').textContent=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
 try{const last=JSON.parse(localStorage.getItem('ashaLast')||'null');if(last){Object.assign(state,last);renderResult(last.score,last.textRisk||0)}}catch(e){}
+
+// Load the same feature layers in both the browser demo and Android WebView.
+(()=>{
+  const scripts=['features_v4.js','gamification.js','signup_once.js'];
+  const load=i=>{if(i>=scripts.length)return;const s=document.createElement('script');s.src=scripts[i];s.onload=()=>load(i+1);s.onerror=()=>load(i+1);document.body.appendChild(s)};
+  load(0);
+})();
