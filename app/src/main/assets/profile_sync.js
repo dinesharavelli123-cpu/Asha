@@ -5,7 +5,7 @@
   const read=(k,fallback)=>{try{return JSON.parse(localStorage.getItem(k)||'null')||fallback}catch(e){return fallback}};
   const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
   const langCodes={English:'EN',Hindi:'HI',Telugu:'TE',Tamil:'TA',Bengali:'BN',Marathi:'MR'};
-  const ageLabels={under18:'Under 18','18-24':'18–24','25-39':'25–39',40plus:'40+','prefer-not':'Prefer not to say'};
+  const ageLabels={under18:'Under 18','18-24':'18–24','25-39':'25–39','40plus':'40+','prefer-not':'Prefer not to say'};
 
   function profile(){
     const p=read(PROFILE,null); if(!p)return null;
