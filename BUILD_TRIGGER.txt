@@ -1,1 +1,1 @@
-Trigger ASHA APK cloud build.
+Trigger ASHA APK cloud build — animated v2.
