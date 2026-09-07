@@ -18,6 +18,7 @@ import android.os.OutcomeReceiver;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.speech.RecognizerIntent;
+import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -26,26 +27,19 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import androidx.health.connect.client.contracts.HealthPermissionsRequestContract;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MainActivity extends Activity {
     private WebView webView;
     private static final int VOICE_REQUEST = 7001;
     private static final int MIC_PERMISSION_REQUEST = 7002;
     private static final int HEALTH_SLEEP_PERMISSION_REQUEST = 7003;
-    private static final String HEALTH_PROVIDER = "com.google.android.apps.healthdata";
-    private final Set<String> sleepPermissions = new HashSet<>(Collections.singletonList("android.permission.health.READ_SLEEP"));
-    private final HealthPermissionsRequestContract healthPermissionsContract = new HealthPermissionsRequestContract(HEALTH_PROVIDER);
     private boolean voicePending = false;
+    private boolean sleepPermissionScreenOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +56,10 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setBuiltInZoomControls(false);
         s.setDisplayZoomControls(false);
+        s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+
+        CookieManager.getInstance().setAcceptCookie(true);
+        CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
 
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient() {
@@ -69,8 +67,10 @@ public class MainActivity extends Activity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
                 String scheme = uri.getScheme();
-                if ("http".equals(scheme) || "https".equals(scheme)) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                if (request.isForMainFrame() && ("http".equals(scheme) || "https".equals(scheme))) {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                    } catch (Exception ignored) {}
                     return true;
                 }
                 return false;
@@ -102,6 +102,28 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void openSleepPermissionManager() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            sendSleepToWeb("unsupported", 0, "Real sleep reading is available on Android 14+ in this build.");
+            return;
+        }
+        try {
+            Intent i = new Intent(HealthConnectManager.ACTION_MANAGE_HEALTH_PERMISSIONS);
+            i.putExtra(Intent.EXTRA_PACKAGE_NAME, getPackageName());
+            sleepPermissionScreenOpen = true;
+            startActivityForResult(i, HEALTH_SLEEP_PERMISSION_REQUEST);
+        } catch (Exception first) {
+            try {
+                Intent i = new Intent(HealthConnectManager.ACTION_MANAGE_HEALTH_PERMISSIONS);
+                sleepPermissionScreenOpen = true;
+                startActivityForResult(i, HEALTH_SLEEP_PERMISSION_REQUEST);
+            } catch (Exception second) {
+                sleepPermissionScreenOpen = false;
+                sendSleepToWeb("error", 0, "Health Connect permission settings could not be opened on this device.");
+            }
+        }
+    }
+
     private void refreshSleepDataInternal(boolean mayRequestPermission) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             sendSleepToWeb("unsupported", 0, "Real sleep reading is available on Android 14+ in this build.");
@@ -109,16 +131,8 @@ public class MainActivity extends Activity {
         }
 
         if (checkSelfPermission(HealthPermissions.READ_SLEEP) != PackageManager.PERMISSION_GRANTED) {
-            if (mayRequestPermission) {
-                try {
-                    Intent permissionIntent = healthPermissionsContract.createIntent(this, sleepPermissions);
-                    startActivityForResult(permissionIntent, HEALTH_SLEEP_PERMISSION_REQUEST);
-                } catch (Exception e) {
-                    sendSleepToWeb("error", 0, "Health Connect permission screen could not be opened.");
-                }
-            } else {
-                sendSleepToWeb("permission_required", 0, "Tap the sleep card to allow Health Connect sleep access.");
-            }
+            if (mayRequestPermission) openSleepPermissionManager();
+            else sendSleepToWeb("permission_required", 0, "Connect Sleep in Health Connect to read your real sleep data.");
             return;
         }
 
@@ -154,7 +168,7 @@ public class MainActivity extends Activity {
                         public void onResult(ReadRecordsResponse<SleepSessionRecord> response) {
                             List<SleepSessionRecord> records = response.getRecords();
                             if (records == null || records.isEmpty()) {
-                                sendSleepToWeb("no_data", 0, "Permission is granted, but Health Connect has no recent sleep record. A watch or health app must write sleep data first.");
+                                sendSleepToWeb("no_data", 0, "Sleep access is connected, but Health Connect has no recent sleep record yet.");
                                 return;
                             }
 
@@ -177,16 +191,16 @@ public class MainActivity extends Activity {
                             }
 
                             double hours = Math.max(0, sleepMinutes) / 60.0;
-                            sendSleepToWeb("ok", hours, "Latest sleep session read directly from Health Connect.");
+                            sendSleepToWeb("ok", hours, "Latest sleep session read from Health Connect.");
                         }
 
                         @Override
                         public void onError(HealthConnectException error) {
-                            sendSleepToWeb("error", 0, "Health Connect could not read sleep data. Check the permission and try again.");
+                            sendSleepToWeb("error", 0, "Health Connect could not read sleep data. Check Sleep access and try again.");
                         }
                     });
         } catch (SecurityException e) {
-            sendSleepToWeb("permission_required", 0, "Sleep permission is required to read Health Connect data.");
+            sendSleepToWeb("permission_required", 0, "Sleep access is required to read Health Connect data.");
         } catch (Exception e) {
             sendSleepToWeb("error", 0, "Health Connect sleep data could not be loaded.");
         }
@@ -198,11 +212,8 @@ public class MainActivity extends Activity {
             runOnUiThread(() -> {
                 Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                 if (v != null && v.hasVibrator()) {
-                    if (Build.VERSION.SDK_INT >= 26) {
-                        v.vibrate(VibrationEffect.createWaveform(new long[]{0, 140, 80, 140}, -1));
-                    } else {
-                        v.vibrate(new long[]{0, 140, 80, 140}, -1);
-                    }
+                    if (Build.VERSION.SDK_INT >= 26) v.vibrate(VibrationEffect.createWaveform(new long[]{0, 140, 80, 140}, -1));
+                    else v.vibrate(new long[]{0, 140, 80, 140}, -1);
                 }
             });
         }
@@ -210,12 +221,8 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void openEmergencyDialer() {
             runOnUiThread(() -> {
-                try {
-                    Intent i = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:112"));
-                    startActivity(i);
-                } catch (Exception e) {
-                    Toast.makeText(MainActivity.this, "Emergency dialer unavailable", Toast.LENGTH_SHORT).show();
-                }
+                try { startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:112"))); }
+                catch (Exception e) { Toast.makeText(MainActivity.this, "Emergency dialer unavailable", Toast.LENGTH_SHORT).show(); }
             });
         }
 
@@ -235,21 +242,15 @@ public class MainActivity extends Activity {
                 if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                     voicePending = true;
                     requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_REQUEST);
-                } else {
-                    launchVoiceRecognition();
-                }
+                } else launchVoiceRecognition();
             });
         }
 
         @JavascriptInterface
-        public void requestSleepAccess() {
-            runOnUiThread(() -> refreshSleepDataInternal(true));
-        }
+        public void requestSleepAccess() { runOnUiThread(() -> refreshSleepDataInternal(true)); }
 
         @JavascriptInterface
-        public void refreshSleepData() {
-            runOnUiThread(() -> refreshSleepDataInternal(false));
-        }
+        public void refreshSleepData() { runOnUiThread(() -> refreshSleepDataInternal(false)); }
     }
 
     @Override
@@ -275,17 +276,17 @@ public class MainActivity extends Activity {
                 webView.evaluateJavascript("window.setNativeVoiceText && window.setNativeVoiceText(" + safe + ");", null);
             }
         } else if (requestCode == HEALTH_SLEEP_PERMISSION_REQUEST) {
-            try {
-                Set<String> granted = healthPermissionsContract.parseResult(resultCode, data);
-                if (granted.contains("android.permission.health.READ_SLEEP") ||
-                        (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && checkSelfPermission(HealthPermissions.READ_SLEEP) == PackageManager.PERMISSION_GRANTED)) {
-                    readLatestSleepFromHealthConnect();
-                } else {
-                    sendSleepToWeb("permission_required", 0, "Sleep access was not granted. ASHA will not show a sleep value until you choose to connect it.");
-                }
-            } catch (Exception e) {
-                sendSleepToWeb("error", 0, "Health Connect permission result could not be read.");
-            }
+            sleepPermissionScreenOpen = false;
+            refreshSleepDataInternal(false);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (sleepPermissionScreenOpen && webView != null) {
+            sleepPermissionScreenOpen = false;
+            webView.postDelayed(() -> refreshSleepDataInternal(false), 350);
         }
     }
 
