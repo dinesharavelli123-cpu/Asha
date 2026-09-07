@@ -59,7 +59,8 @@ public class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                injectV4Features();
+                injectAssetScript("features_v4.js", "ASHA privacy features could not load");
+                injectAssetScript("gamification.js", "ASHA rewards could not load");
             }
         });
 
@@ -67,16 +68,16 @@ public class MainActivity extends Activity {
         webView.loadUrl("file:///android_asset/index.html");
     }
 
-    private void injectV4Features() {
+    private void injectAssetScript(String assetName, String errorMessage) {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("features_v4.js")));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open(assetName)));
             StringBuilder script = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) script.append(line).append('\n');
             reader.close();
             webView.evaluateJavascript(script.toString(), null);
         } catch (Exception e) {
-            Toast.makeText(this, "ASHA privacy features could not load", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
         }
     }
 
