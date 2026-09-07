@@ -48,15 +48,17 @@ let tt;function toast(t){const x=$('#toast');x.textContent=t;x.classList.add('on
 const h=new Date().getHours();$('#greet').textContent=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
 try{const last=JSON.parse(localStorage.getItem('ashaLast')||'null');if(last){Object.assign(state,last);renderResult(last.score,last.textRisk||0)}}catch(e){}
 
-// Load feature layers in the correct order. On first launch signup completes before profile/privacy layers initialise.
+// Load feature layers in the correct order for both browser and Android.
 (()=>{
   const load=src=>new Promise(resolve=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=resolve;document.body.appendChild(s)});
   const loadCore=async()=>{await load('features_v4.js');await load('gamification.js');await load('profile_sync.js');try{window.ashaApplyLocalProfile?.()}catch(e){}};
   let onboarded=false;try{onboarded=localStorage.getItem('ashaOnboardedV1')==='1'}catch(e){}
-  if(onboarded){
-    load('features_v4.js').then(()=>load('gamification.js')).then(()=>load('signup_once.js')).then(()=>load('profile_sync.js')).then(()=>{try{window.ashaApplyLocalProfile?.()}catch(e){}});
-  }else{
-    load('signup_once.js');
-    window.addEventListener('asha-signup-complete',()=>{loadCore()},{once:true});
-  }
+  load('tutorial.js').then(()=>{
+    if(onboarded){
+      load('features_v4.js').then(()=>load('gamification.js')).then(()=>load('signup_once.js')).then(()=>load('profile_sync.js')).then(()=>{try{window.ashaApplyLocalProfile?.()}catch(e){}});
+    }else{
+      load('signup_once.js');
+      window.addEventListener('asha-signup-complete',()=>{loadCore()},{once:true});
+    }
+  });
 })();
