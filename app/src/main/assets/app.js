@@ -1,5 +1,10 @@
-// Step 1 intentionally keeps JavaScript minimal.
-// The loading screen is driven by CSS so it cannot get stuck at 0% if a timer is throttled.
-window.addEventListener('load',()=>{
-  document.documentElement.dataset.saahayReady='1';
-});
+let mode='login';
+const $=id=>document.getElementById(id);
+function show(id){['welcome','authPage','accountPage'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
+function openAuth(next){mode=next;show('authPage');$('authMessage').textContent='';$('authForm').reset();const signup=mode==='signup';$('authTitle').textContent=signup?'Create your space':'Welcome back';$('authSubtitle').textContent=signup?'Start your private SAHAAY account.':'Log in to continue your space.';$('submitBtn').textContent=signup?'CREATE ACCOUNT':'LOG IN';$('confirmPassword').classList.toggle('hidden',!signup);$('confirmPassword').required=signup;$('forgotBtn').classList.toggle('hidden',signup);$('password').autocomplete=signup?'new-password':'current-password';}
+function busy(on){$('submitBtn').disabled=on;$('submitBtn').textContent=on?'PLEASE WAIT…':(mode==='signup'?'CREATE ACCOUNT':'LOG IN');}
+window.addEventListener('load',()=>{document.documentElement.dataset.saahayReady='1';$('loginBtn').onclick=()=>openAuth('login');$('signupBtn').onclick=()=>openAuth('signup');$('backBtn').onclick=()=>show('welcome');$('logoutBtn').onclick=()=>window.SAHAAYAuth&&SAHAAYAuth.logOut();$('forgotBtn').onclick=()=>{const email=$('email').value.trim();if(!email){$('authMessage').textContent='Enter your email first.';return;}$('authMessage').textContent='Sending reset email…';SAHAAYAuth.resetPassword(email);};$('authForm').onsubmit=e=>{e.preventDefault();const email=$('email').value.trim(),password=$('password').value;if(mode==='signup'&&password!==$('confirmPassword').value){$('authMessage').textContent='Passwords do not match.';return;}if(!window.SAHAAYAuth){$('authMessage').textContent='Authentication is unavailable. Please reopen the app.';return;}busy(true);$('authMessage').textContent='';if(mode==='signup')SAHAAYAuth.signUp(email,password);else SAHAAYAuth.logIn(email,password);};});
+window.saahayAuthSuccess=email=>{busy(false);$('userEmail').textContent=email||'Account connected';show('accountPage');};
+window.saahayAuthError=message=>{busy(false);$('authMessage').textContent=message||'Could not continue. Please try again.';};
+window.saahayResetSent=()=>{$('authMessage').textContent='Password reset email sent.';};
+window.saahayLoggedOut=()=>{show('welcome');$('authForm').reset();};
