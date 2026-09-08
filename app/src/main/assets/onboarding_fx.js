@@ -16,4 +16,5 @@ if(!decorate())new MutationObserver((m,obs)=>{if(decorate())obs.disconnect()}).o
 if(!document.querySelector('script[data-sa-support-suite]')){const s=document.createElement('script');s.src='support_ai_suite.js';s.dataset.saSupportSuite='1';document.body.appendChild(s)}
 if(!document.querySelector('script[data-sa-ios]')){const i=document.createElement('script');i.src='ios_support.js';i.dataset.saIos='1';document.body.appendChild(i)}
 if(!document.querySelector('script[data-sa-games]')){const g=document.createElement('script');g.src='calm_games.js';g.dataset.saGames='1';document.body.appendChild(g)}
+if(!document.querySelector('script[data-sa-quality-v2]')){const q=document.createElement('script');q.src='quality_overhaul_v2.js';q.dataset.saQualityV2='1';document.body.appendChild(q)}
 })();
