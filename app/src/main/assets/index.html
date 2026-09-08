@@ -1,100 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="theme-color" content="#0b1026" />
-<title>ASHA — Wellbeing Companion</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1A1238" />
+  <title>SAHAAY AI</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div class="app">
-<div class="bg-orbs"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div>
-
-<section id="splash" class="screen splash on">
-  <div class="mesh"></div><div class="stars"></div>
-  <div class="splash-content">
-    <div class="pill"><span class="dot"></span> AI-ASSISTED WELLBEING</div>
-    <div class="lotus"><i class="petal"></i><i class="petal"></i><i class="petal"></i><i class="petal"></i><i class="petal"></i></div>
-    <div class="brand">ASHA</div>
-    <p class="tag">Detect meaningful change, understand why it changed, and connect people to support earlier.</p>
-    <button class="btn primary" style="min-width:190px" onclick="go('home')">Enter ASHA ✨</button>
-    <p style="font-size:10px;opacity:.48;margin-top:20px">Wellbeing prototype • not a medical diagnosis</p>
-  </div>
-</section>
-
-<section id="home" class="screen">
-  <div class="top"><div class="avatar">A</div><div><small id="greet">Good morning</small><b>How are you feeling today?</b></div><button class="icon" onclick="toast('No new alerts')">🔔</button></div>
-  <div class="hero">
-    <div><small>YOUR WELLBEING</small><h2>Stay ahead of meaningful change.</h2><p id="summary">Your recent trend is steady. A quick check-in keeps ASHA updated.</p><button class="btn primary" onclick="startCheck()">Quick Check-in</button></div>
-    <div class="ring" id="homeRing"><span><b id="homeScore">68</b><em>/100</em></span></div>
-  </div>
-  <div class="section"><h3>Recent signals</h3><small>last 7 days</small></div>
-  <div class="grid">
-    <div class="card metric"><i>😴</i><small>SLEEP</small><b id="sleepMetric">7.2 h</b><span class="good" id="sleepTrend">Improving</span></div>
-    <div class="card metric"><i>⚡</i><small>STRESS</small><b id="stressMetric">Moderate</b><span class="up">Watching</span></div>
-    <div class="card metric"><i>💬</i><small>SOCIAL</small><b id="socialMetric">Stable</b><span class="good">Engaged</span></div>
-    <div class="card metric"><i>🧠</i><small>AI SIGNAL</small><b id="sig">Low</b><span class="up">Adaptive</span></div>
-  </div>
-  <div class="section"><h3>30-day trajectory</h3><small>predictive trend</small></div>
-  <div class="card trend">
-    <svg viewBox="0 0 340 125" aria-label="wellbeing trend">
-      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#4fd8c3"/><stop offset=".5" stop-color="#7357f4"/><stop offset="1" stop-color="#ef6dad"/></linearGradient><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#7357f4" stop-opacity=".25"/><stop offset="1" stop-color="#7357f4" stop-opacity="0"/></linearGradient></defs>
-      <path d="M6 101 C44 95 63 83 91 84 S142 75 164 69 S209 60 233 49 S285 38 334 20 L334 124 L6 124Z" fill="url(#fill)"/>
-      <path class="line" d="M6 101 C44 95 63 83 91 84 S142 75 164 69 S209 60 233 49 S285 38 334 20"/>
-      <circle class="sparkdot" cx="334" cy="20" r="5" fill="#7357f4"/>
-    </svg>
-  </div>
-  <div class="quick-row">
-    <div class="card quick" onclick="go('insights')"><div class="qicon">✨</div><div><b>AI Insights</b><small class="mut">why signals changed</small></div></div>
-    <div class="card quick" onclick="go('counsellor')"><div class="qicon">🧑‍⚕️</div><div><b>Care Console</b><small class="mut">demo escalation</small></div></div>
-  </div>
-</section>
-
-<section id="check" class="screen">
-  <div class="head"><button class="back" onclick="go('home')">←</button><div><h2>Quick Check-in</h2><small><span id="stepN">1</span> of 4 · about 60 seconds</small></div></div>
-  <div class="progress"><span id="prog"></span></div>
-  <div class="step on" data-s="1"><h2>How are you feeling right now?</h2><p>Choose the option that feels closest. There is no “right” answer.</p><div class="moods"><button class="mood" data-v="0">😊</button><button class="mood" data-v="1">🙂</button><button class="mood sel" data-v="2">😐</button><button class="mood" data-v="3">😟</button><button class="mood" data-v="4">😣</button></div><button class="btn primary wide" onclick="next()">Continue →</button></div>
-  <div class="step" data-s="2"><h2>How was your sleep?</h2><p>ASHA focuses more on change over time than on one single night.</p><div class="choices"><button class="choice" data-key="sleep" data-v="0">Good — rested normally</button><button class="choice sel" data-key="sleep" data-v="1">A little disrupted</button><button class="choice" data-key="sleep" data-v="2">Poor — noticeably worse</button></div><button class="btn primary wide" onclick="next()">Continue →</button></div>
-  <div class="step" data-s="3"><h2>How connected have you felt?</h2><p>This can help spot changes in routine or social withdrawal.</p><div class="choices"><button class="choice" data-key="social" data-v="0">Connected as usual</button><button class="choice sel" data-key="social" data-v="1">A little withdrawn</button><button class="choice" data-key="social" data-v="2">Much more isolated</button></div><button class="btn primary wide" onclick="next()">Continue →</button></div>
-  <div class="step" data-s="4"><h2>Tell ASHA in your own words.</h2><p>Type or use voice. This demo analyses tone and combines it with your other check-in signals.</p><div class="voice-wrap"><button class="voice" onclick="voice()">🎙️</button></div><textarea id="feel" placeholder="Example: I feel tired and overwhelmed today, but I still want to get things done."></textarea><button class="btn primary wide" onclick="analyse()">Analyse my check-in ✨</button></div>
-</section>
-
-<section id="result" class="screen">
-  <div class="head"><button class="back" onclick="go('home')">←</button><div><h2>Your ASHA insight</h2><small>explainable wellbeing signal</small></div></div>
-  <div class="result"><div class="ring" id="resRing"><span><b id="resScore">0</b><em>/100 signal</em></span></div><h2 class="center" id="resTitle">Processing...</h2><p class="center" id="resText" style="opacity:.76;font-size:12px;line-height:1.6"></p></div>
-  <div class="section"><h3>What influenced this?</h3><small>local demo model</small></div>
-  <div class="card">
-    <div class="factor"><header><b>Mood shift</b><span id="fMoodTxt">—</span></header><div class="bar"><span id="fMood"></span></div></div>
-    <div class="factor"><header><b>Sleep disruption</b><span id="fSleepTxt">—</span></header><div class="bar"><span id="fSleep"></span></div></div>
-    <div class="factor"><header><b>Social withdrawal</b><span id="fSocialTxt">—</span></header><div class="bar"><span id="fSocial"></span></div></div>
-    <div class="factor"><header><b>Language tone</b><span id="fTextTxt">—</span></header><div class="bar"><span id="fText"></span></div></div>
-  </div>
-  <div class="explain" id="explain">ASHA is preparing a plain-language explanation.</div>
-  <button class="btn primary wide mt" onclick="go('insights')">See AI insights</button>
-</section>
-
-<section id="insights" class="screen">
-  <div class="head"><button class="back" onclick="go('home')">←</button><div><h2>AI Insights</h2><small>transparent, explainable signals</small></div></div>
-  <div class="card insight-card"><b>✨ Pattern summary</b><p class="mut" id="insightSummary">Your recent pattern looks mostly steady. ASHA will adapt after your next check-in.</p></div>
-  <div class="card insight-card"><b>🧩 Why it matters</b><p class="mut">A single low day is not the same as a sustained change. ASHA combines mood, sleep, social connection and language tone to avoid overreacting to one signal.</p></div>
-  <div class="card insight-card"><b>🔒 Privacy-first demo</b><p class="mut">This prototype keeps its scoring logic on-device. A production version could use consent-based cloud AI while keeping sensitive data minimised.</p></div>
-  <div class="card insight-card"><b>🤝 Human-in-the-loop</b><p class="mut">When risk grows, the product concept prioritises trusted contacts and trained human support rather than pretending AI can replace professional care.</p></div>
-</section>
-
-<section id="counsellor" class="screen">
-  <div class="head"><button class="back" onclick="go('home')">←</button><div><h2>Counsellor Console</h2><small>demo command center</small></div></div>
-  <div class="dashTop"><b style="font-size:18px">Live wellbeing overview</b><p style="font-size:11px;opacity:.72">Prioritise meaningful changes, not just raw scores.</p><div class="stats"><div class="stat"><b>2</b><small>CRITICAL</small></div><div class="stat"><b>5</b><small>HIGH</small></div><div class="stat"><b>14</b><small>WATCH</small></div><div class="stat"><b>63</b><small>STABLE</small></div></div></div>
-  <div class="section"><h3>Cases needing attention</h3><small>demo data</small></div>
-  <div class="card" style="padding:0"><div class="case" onclick="toast('Case opened • demo')"><div><strong>Student A</strong><small>sleep ↓ • isolation ↑ • text tone changed</small></div><span class="badge">CRITICAL</span></div><div class="case" onclick="toast('Case opened • demo')"><div><strong>Student B</strong><small>3-day sustained decline • missed check-ins</small></div><span class="badge">HIGH</span></div><div class="case" onclick="toast('Case opened • demo')"><div><strong>Student C</strong><small>stress trend rising • still engaged</small></div><span class="badge m">WATCH</span></div><div class="case" onclick="toast('Case opened • demo')"><div><strong>Student D</strong><small>recovered after human follow-up</small></div><span class="badge l">STABLE</span></div></div>
-  <button class="btn primary wide mt" onclick="toast('Human intervention workflow started • demo')">Start human intervention</button>
-</section>
-
-<nav id="bottom" class="bottom hidden"><button class="nav sel" onclick="go('home',this)">⌂<span>Home</span></button><button class="nav" onclick="go('insights',this)">✦<span>Insights</span></button><button class="nav" onclick="startCheck(this)">＋<span>Check-in</span></button><button class="nav" onclick="go('counsellor',this)">☷<span>Care</span></button></nav>
-<button id="sos" class="sos hidden" onclick="openSOS()">SOS</button>
-<div id="sosModal" class="modal" onclick="if(event.target===this)closeSOS()"><div class="sheet"><div class="pill" style="color:#d53d4a;background:#fff2f3;border-color:#ffd7da;margin-bottom:8px">SUPPORT OPTIONS</div><h2>You can reach support quickly.</h2><p>ASHA does not automatically place a call. Choose what you want to do.</p><div class="actions"><button class="action danger" onclick="dial()">📞 Open emergency dialer (112)</button><button class="action" onclick="share()">🤝 Message someone you trust</button><button class="action" onclick="closeSOS();toast('Counsellor escalation created • demo')">🧑‍⚕️ Request counsellor follow-up</button><button class="action" onclick="closeSOS()">Cancel</button></div></div></div>
-<div id="toast" class="toast">Done</div>
-</div>
-<script src="app.js"></script>
+  <main class="launch-screen">
+    <div class="glow glow-one"></div>
+    <div class="glow glow-two"></div>
+    <section class="brand-stage">
+      <div class="orbit"><i></i><i></i><i></i></div>
+      <div class="logo-card">S</div>
+      <p class="kicker">YOUR PRIVATE SUPPORT COMPANION</p>
+      <h1>SAHAAY AI</h1>
+      <p class="tagline">Support • Calm • Grow</p>
+      <div class="loader"><span></span></div>
+      <small id="statusText">Starting fresh…</small>
+    </section>
+  </main>
+  <script src="app.js"></script>
 </body>
 </html>

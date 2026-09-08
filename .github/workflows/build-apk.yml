@@ -1,4 +1,4 @@
-name: Build SAHAAY AI APK
+name: Build Fresh SAHAAY AI APK
 
 on:
   workflow_dispatch:
@@ -13,38 +13,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK
+      - uses: android-actions/setup-android@v3
+      - name: Install SDK
         run: |
           yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-36" "build-tools;35.0.0"
-
-      - name: Set up Gradle 8.13
-        uses: gradle/actions/setup-gradle@v4
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.13'
-
-      - name: Build SAHAAY AI debug APK
-        run: gradle --no-daemon --stacktrace :app:assembleDebug
-
-      - name: Verify APK
-        run: test -f app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Upload SAHAAY AI APK
-        uses: actions/upload-artifact@v4
+      - name: Build APK
+        run: gradle --no-daemon :app:assembleDebug
+      - uses: actions/upload-artifact@v4
         with:
-          name: SAHAAY-AI-v10-apk
+          name: SAHAAY-AI-FRESH
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-          retention-days: 14

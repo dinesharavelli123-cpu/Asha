@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ASHA" parent="android:style/Theme.Material.Light.NoActionBar">
+    <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:fontFamily">sans</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:statusBarColor">#111534</item>
-        <item name="android:navigationBarColor">#111534</item>
-        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:statusBarColor">#1A1238</item>
+        <item name="android:navigationBarColor">#130C2B</item>
+        <item name="android:windowBackground">#1A1238</item>
     </style>
 </resources>

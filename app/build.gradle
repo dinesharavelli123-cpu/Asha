@@ -3,30 +3,14 @@ plugins {
 }
 
 android {
-    namespace 'com.asha.demo'
-    compileSdk 36
+    namespace 'com.saahay.ai'
+    compileSdk 35
 
     defaultConfig {
-        applicationId 'com.asha.demo'
+        applicationId 'com.saahay.ai'
         minSdk 26
         targetSdk 35
-        versionCode 10
-        versionName '10.0-saahay-ai'
+        versionCode 1
+        versionName '1.0.0'
     }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-}
-
-dependencies {
-    implementation 'androidx.health.connect:connect-client:1.1.0'
 }
