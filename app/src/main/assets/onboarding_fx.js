@@ -17,4 +17,5 @@ if(!document.querySelector('script[data-sa-support-suite]')){const s=document.cr
 if(!document.querySelector('script[data-sa-ios]')){const i=document.createElement('script');i.src='ios_support.js';i.dataset.saIos='1';document.body.appendChild(i)}
 if(!document.querySelector('script[data-sa-games]')){const g=document.createElement('script');g.src='calm_games.js';g.dataset.saGames='1';document.body.appendChild(g)}
 if(!document.querySelector('script[data-sa-quality-v2]')){const q=document.createElement('script');q.src='quality_overhaul_v2.js';q.dataset.saQualityV2='1';document.body.appendChild(q)}
+if(!document.querySelector('script[data-sa-games-v2]')){const g2=document.createElement('script');g2.src='mind_games_v2.js';g2.dataset.saGamesV2='1';document.body.appendChild(g2)}
 })();
