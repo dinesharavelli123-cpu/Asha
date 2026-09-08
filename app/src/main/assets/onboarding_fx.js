@@ -13,4 +13,5 @@ const css=document.createElement('style');css.textContent=`
 document.head.appendChild(css);
 const decorate=()=>{const o=document.getElementById('saahayOnboarding');if(!o||o.dataset.fx)return false;o.dataset.fx='1';o.querySelectorAll('input,select').forEach(el=>{el.setAttribute('autocomplete',el.type==='email'?'email':el.id==='saName'?'name':'off')});return true};
 if(!decorate())new MutationObserver((m,obs)=>{if(decorate())obs.disconnect()}).observe(document.documentElement,{childList:true,subtree:true});
+if(!document.querySelector('script[data-sa-support-suite]')){const s=document.createElement('script');s.src='support_ai_suite.js';s.dataset.saSupportSuite='1';document.body.appendChild(s)}
 })();
