@@ -2,7 +2,7 @@
 if(window.__saahayStartupFx)return;window.__saahayStartupFx=true;
 const splash=document.getElementById('splash');if(!splash)return;
 const style=document.createElement('style');style.textContent=`
-#splash.sa-cinematic{padding:0!important;display:grid!important;place-items:center!important;overflow:hidden!important;background:linear-gradient(145deg,#070718 0%,#12092b 30%,#27105b 66%,#4d22a3 100%)!important;color:#fff!important}
+#splash.sa-cinematic{position:fixed!important;inset:0!important;z-index:30000!important;padding:0!important;display:grid!important;place-items:center!important;overflow:hidden!important;background:linear-gradient(145deg,#070718 0%,#12092b 30%,#27105b 66%,#4d22a3 100%)!important;color:#fff!important}
 .sa-start-bg,.sa-start-stars,.sa-start-grid,.sa-start-vignette{position:absolute;inset:0;pointer-events:none}
 .sa-start-bg{inset:-25%;background:radial-gradient(circle at 20% 30%,#a66bff88 0 8%,transparent 27%),radial-gradient(circle at 80% 28%,#5d3df099 0 7%,transparent 28%),radial-gradient(circle at 50% 80%,#d653ff55 0 7%,transparent 30%);filter:blur(28px);animation:saStartAurora 8s ease-in-out infinite alternate}
 @keyframes saStartAurora{0%{transform:translate(-3%,2%) scale(1)}100%{transform:translate(4%,-4%) scale(1.13) rotate(7deg)}}
@@ -34,8 +34,6 @@ const style=document.createElement('style');style.textContent=`
 .sa-load-bar{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#8d5cf6,#d971ff,#6fe9d0);box-shadow:0 0 24px #aa72ff;transition:width .22s ease}
 .sa-load-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:9px;color:#bdb8d5;letter-spacing:.04em}.sa-load-status{transition:opacity .18s ease,transform .18s ease}.sa-load-status.swap{opacity:0;transform:translateY(5px)}
 .sa-start-pct{font-weight:900;color:#fff}
-.sa-start-skip{margin-top:20px;border:1px solid #ffffff22;background:#ffffff0b;color:#d9d4ea;border-radius:999px;padding:9px 14px;font-size:9px;font-weight:800;opacity:0;animation:saTextIn .6s 1.5s forwards}
-.sa-start-skip:active{transform:scale(.95)}
 #splash.sa-exit{animation:saSplashExit .72s cubic-bezier(.7,0,.2,1) forwards!important}
 @keyframes saSplashExit{0%{opacity:1;filter:blur(0);transform:scale(1)}100%{opacity:0;filter:blur(16px);transform:scale(1.07)}}
 .sa-start-flash{position:absolute;inset:0;background:#a66dff;opacity:0;pointer-events:none;z-index:10}.sa-exit .sa-start-flash{animation:saFlash .65s ease forwards}@keyframes saFlash{40%{opacity:.22}100%{opacity:0}}
@@ -44,12 +42,11 @@ document.head.appendChild(style);
 splash.classList.add('sa-cinematic');
 splash.innerHTML=`<div class="sa-start-bg"></div><div class="sa-start-stars"></div><div class="sa-start-grid"></div><div class="sa-start-vignette"></div>
 ${Array.from({length:12},(_,i)=>`<i class="sa-particle" style="left:${8+(i*7.1)%86}%;top:${10+(i*13)%78}%;animation-delay:-${(i*.37).toFixed(2)}s;transform:scale(${.65+(i%4)*.18})"></i>`).join('')}
-<div class="sa-start-main"><div class="sa-logo-stage"><div class="sa-logo-halo"></div><div class="sa-orbit"></div><div class="sa-orbit two"></div><div class="sa-logo-core"><span class="sa-logo-s">S</span></div></div><div class="sa-start-kicker">INTELLIGENT WELLBEING COMPANION</div><div class="sa-start-brand">SAHAAY AI</div><div class="sa-start-sub">Predict. Understand. Recover. Grow.</div><div class="sa-loadbox"><div class="sa-load-track"><div class="sa-load-bar" id="saStartBar"></div></div><div class="sa-load-meta"><span class="sa-load-status" id="saStartStatus">Preparing your private space…</span><span class="sa-start-pct" id="saStartPct">0%</span></div></div><button class="sa-start-skip" id="saStartSkip">Tap to continue</button></div><div class="sa-start-flash"></div>`;
-const bar=document.getElementById('saStartBar'),pct=document.getElementById('saStartPct'),status=document.getElementById('saStartStatus'),skip=document.getElementById('saStartSkip');
+<div class="sa-start-main"><div class="sa-logo-stage"><div class="sa-logo-halo"></div><div class="sa-orbit"></div><div class="sa-orbit two"></div><div class="sa-logo-core"><span class="sa-logo-s">S</span></div></div><div class="sa-start-kicker">INTELLIGENT WELLBEING COMPANION</div><div class="sa-start-brand">SAHAAY AI</div><div class="sa-start-sub">Predict. Understand. Recover. Grow.</div><div class="sa-loadbox"><div class="sa-load-track"><div class="sa-load-bar" id="saStartBar"></div></div><div class="sa-load-meta"><span class="sa-load-status" id="saStartStatus">Preparing your private space…</span><span class="sa-start-pct" id="saStartPct">0%</span></div></div></div><div class="sa-start-flash"></div>`;
+const bar=document.getElementById('saStartBar'),pct=document.getElementById('saStartPct'),status=document.getElementById('saStartStatus');
 const messages=['Preparing your private space…','Loading your growth journey…','Activating wellbeing intelligence…','Almost ready…'];let p=0,lastMsg=-1,done=false;
 function setMsg(i){if(i===lastMsg)return;lastMsg=i;status.classList.add('swap');setTimeout(()=>{status.textContent=messages[i];status.classList.remove('swap')},170)}
-const timer=setInterval(()=>{if(done)return;p+=p<45?3:p<78?2:1.5;if(p>100)p=100;bar.style.width=p+'%';pct.textContent=Math.round(p)+'%';setMsg(p<30?0:p<58?1:p<84?2:3);if(p>=100){clearInterval(timer);setTimeout(finish,320)}},70);
-function finish(){if(done)return;done=true;splash.classList.add('sa-exit');setTimeout(()=>{try{if(typeof window.go==='function')window.go('home');else{splash.classList.remove('on');const h=document.getElementById('home');if(h)h.classList.add('on')}}catch(e){}},620)}
-skip.addEventListener('click',finish);
+const timer=setInterval(()=>{if(done)return;p+=p<45?4:p<78?3:2;if(p>100)p=100;bar.style.width=p+'%';pct.textContent=Math.round(p)+'%';setMsg(p<30?0:p<58?1:p<84?2:3);if(p>=100){clearInterval(timer);setTimeout(finish,220)}},55);
+function finish(){if(done)return;done=true;splash.classList.add('sa-exit');setTimeout(()=>{let onboarded=false;try{onboarded=localStorage.getItem('ashaOnboardedV1')==='1'||localStorage.getItem('ashaOnboardedV2')==='1'}catch(e){}if(onboarded){try{window.go?.('home')}catch(e){}}else{try{splash.classList.remove('on');if(!document.getElementById('saahayOnboarding')){const sc=document.createElement('script');sc.src='signup_once.js';document.body.appendChild(sc)}}catch(e){}}},620)}
 window.saahayFinishStartup=finish;
 })();
