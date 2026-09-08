@@ -51,7 +51,7 @@ try{const last=JSON.parse(localStorage.getItem('ashaLast')||'null');if(last){Obj
 
 (()=>{
   const load=src=>new Promise(resolve=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=resolve;document.body.appendChild(s)});
-  const finishLayers=async()=>{await load('profile_sync.js');try{window.ashaApplyLocalProfile?.()}catch(e){}await load('real_data.js');await load('sleep_calm.js');await load('motion_fx.js');await load('mental_tests.js')};
+  const finishLayers=async()=>{await load('profile_sync.js');try{window.ashaApplyLocalProfile?.()}catch(e){}await load('real_data.js');await load('sleep_calm.js');await load('motion_fx.js');await load('playful_fx.js');await load('mental_tests.js')};
   const loadCore=async()=>{await load('features_v4.js');await load('gamification_v2.js');await finishLayers()};
   let onboarded=false;try{onboarded=localStorage.getItem('ashaOnboardedV1')==='1'}catch(e){}
   load('tutorial.js').then(()=>{
