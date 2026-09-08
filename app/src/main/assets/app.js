@@ -1,4 +1,4 @@
-(()=>{const a=document.createElement('script');a.src='input_fix.js';document.head.appendChild(a);const s=document.createElement('script');s.src='startup_fx.js';document.head.appendChild(s)})();
+(()=>{const a=document.createElement('script');a.src='input_fix.js';document.head.appendChild(a);const o=document.createElement('script');o.src='onboarding_fx.js';document.head.appendChild(o);const s=document.createElement('script');s.src='startup_fx.js';document.head.appendChild(s)})();
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const state={mood:2,sleep:1,social:1,text:'',score:68};let step=1;
 function go(id,btn){$$('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');const nav=$('#bottom'),sos=$('#sos');const show=id!=='splash'&&id!=='check'&&id!=='result';nav.classList.toggle('hidden',!show);sos.classList.toggle('hidden',id==='splash');if(btn){$$('.nav').forEach(n=>n.classList.remove('sel'));btn.classList.add('sel')} window.scrollTo(0,0)}
@@ -49,18 +49,13 @@ let tt;function toast(t){const x=$('#toast');x.textContent=t;x.classList.add('on
 const h=new Date().getHours();$('#greet').textContent=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
 try{const last=JSON.parse(localStorage.getItem('ashaLast')||'null');if(last){Object.assign(state,last);renderResult(last.score,last.textRisk||0)}}catch(e){}
 
-// Load feature layers in the correct order for both browser and Android.
 (()=>{
   const load=src=>new Promise(resolve=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=resolve;document.body.appendChild(s)});
   const finishLayers=async()=>{await load('profile_sync.js');try{window.ashaApplyLocalProfile?.()}catch(e){}await load('real_data.js');await load('sleep_calm.js');await load('motion_fx.js');await load('mental_tests.js')};
   const loadCore=async()=>{await load('features_v4.js');await load('gamification_v2.js');await finishLayers()};
   let onboarded=false;try{onboarded=localStorage.getItem('ashaOnboardedV1')==='1'}catch(e){}
   load('tutorial.js').then(()=>{
-    if(onboarded){
-      load('features_v4.js').then(()=>load('gamification_v2.js')).then(()=>load('signup_once.js')).then(()=>finishLayers());
-    }else{
-      load('signup_once.js');
-      window.addEventListener('asha-signup-complete',()=>{loadCore()},{once:true});
-    }
+    if(onboarded){load('features_v4.js').then(()=>load('gamification_v2.js')).then(()=>load('signup_once.js')).then(()=>finishLayers());}
+    else{load('signup_once.js');window.addEventListener('asha-signup-complete',()=>{loadCore()},{once:true});}
   });
 })();
