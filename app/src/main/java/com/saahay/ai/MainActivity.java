@@ -1,6 +1,7 @@
 package com.saahay.ai;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
@@ -15,11 +16,13 @@ import org.json.JSONObject;
 public class MainActivity extends Activity {
     private WebView webView;
     private FirebaseAuth auth;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
+        prefs = getSharedPreferences("saahay_prefs", MODE_PRIVATE);
         webView = new WebView(this);
         setContentView(webView);
 
@@ -40,6 +43,10 @@ public class MainActivity extends Activity {
 
     private String jsString(String value) {
         return JSONObject.quote(value == null ? "" : value);
+    }
+
+    private String onboardingKey(String email) {
+        return "onboarding_complete_" + (email == null ? "" : email.trim().toLowerCase());
     }
 
     private void sendSuccess(String email) {
@@ -68,6 +75,14 @@ public class MainActivity extends Activity {
             runOnUiThread(() -> auth.sendPasswordResetEmail(email.trim())
                     .addOnSuccessListener(v -> webView.evaluateJavascript("window.saahayResetSent();", null))
                     .addOnFailureListener(MainActivity.this::sendError));
+        }
+
+        @JavascriptInterface public boolean isOnboardingComplete(String email) {
+            return prefs.getBoolean(onboardingKey(email), false);
+        }
+
+        @JavascriptInterface public void setOnboardingComplete(String email) {
+            prefs.edit().putBoolean(onboardingKey(email), true).apply();
         }
 
         @JavascriptInterface public void logOut() {
