@@ -1,3 +1,4 @@
+(()=>{const s=document.createElement('script');s.src='startup_fx.js';document.head.appendChild(s)})();
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const state={mood:2,sleep:1,social:1,text:'',score:68};let step=1;
 function go(id,btn){$$('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');const nav=$('#bottom'),sos=$('#sos');const show=id!=='splash'&&id!=='check'&&id!=='result';nav.classList.toggle('hidden',!show);sos.classList.toggle('hidden',id==='splash');if(btn){$$('.nav').forEach(n=>n.classList.remove('sel'));btn.classList.add('sel')} window.scrollTo(0,0)}
