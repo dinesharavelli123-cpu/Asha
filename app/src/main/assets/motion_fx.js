@@ -1,41 +1,28 @@
 (()=>{
 if(window.__saahayMotionFx)return;window.__saahayMotionFx=true;
 const style=document.createElement('style');style.textContent=`
-:root{--sa-spring:cubic-bezier(.16,1,.3,1)}
-.app:before{content:"";position:fixed;inset:-25%;pointer-events:none;z-index:0;background:conic-gradient(from 180deg at 50% 50%,#7657ef10,#45d4bd10,#ef6dad0d,#7657ef10);filter:blur(70px);animation:saAurora 18s linear infinite}
-@keyframes saAurora{to{transform:rotate(360deg) scale(1.08)}}
-.screen.on{animation:saPageIn .58s var(--sa-spring)!important}
-@keyframes saPageIn{from{opacity:0;transform:translate3d(0,24px,0) scale(.975);filter:blur(7px)}to{opacity:1;transform:none;filter:none}}
-.screen.on>.head,.screen.on>.top{animation:saTopIn .55s .05s var(--sa-spring) both}
-@keyframes saTopIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
-.screen.on .section{animation:saFadeUp .5s .12s var(--sa-spring) both}
-.screen.on .card{animation:saCardIn .62s var(--sa-spring) both}
-.screen.on .card:nth-of-type(2){animation-delay:.07s}.screen.on .card:nth-of-type(3){animation-delay:.14s}.screen.on .card:nth-of-type(4){animation-delay:.21s}
-@keyframes saCardIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
-.card{will-change:transform;transition:transform .28s var(--sa-spring),box-shadow .28s ease,border-color .28s ease!important}
-.card:active{transform:scale(.975)!important}.quick:active,.setting-row:active{transform:scale(.97)}
-.hero{isolation:isolate}.hero:before{animation:heroOrb 5.5s ease-in-out infinite!important}.hero:after{animation:heroOrb 7s ease-in-out infinite reverse!important}
-.hero h2{animation:saFadeUp .65s .08s var(--sa-spring) both}.hero p{animation:saFadeUp .65s .16s var(--sa-spring) both}.hero .btn{animation:saFadeUp .65s .24s var(--sa-spring) both}
-@keyframes saFadeUp{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:none}}
-.ring{animation:saRing .9s var(--sa-spring)!important;box-shadow:0 0 0 1px #ffffff18 inset,0 18px 40px #0003,0 0 35px #54d8bc22!important}
-@keyframes saRing{from{opacity:0;transform:scale(.65) rotate(-80deg)}to{opacity:1;transform:none}}
-.ring:after{content:"";position:absolute;inset:-7px;border-radius:50%;border:1px solid #6ee3cf3d;animation:saRingPulse 2.7s ease-out infinite}
-@keyframes saRingPulse{0%{transform:scale(.88);opacity:.8}75%,100%{transform:scale(1.18);opacity:0}}
-.btn{transition:transform .2s var(--sa-spring),filter .2s ease,box-shadow .2s ease!important}.btn:active{transform:scale(.955)!important}.primary{animation:saButtonGlow 3s ease-in-out infinite}
-@keyframes saButtonGlow{50%{box-shadow:0 16px 34px #6b54e855,0 0 0 5px #7357f40b}}
-.bottom{animation:saNavUp .55s var(--sa-spring) both}@keyframes saNavUp{from{transform:translate(-50%,22px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
-.nav.sel{animation:saNavPop .35s var(--sa-spring)}@keyframes saNavPop{50%{transform:translateY(-5px) scale(1.14)}}
-.modal{transition:opacity .25s ease!important}.modal.on .sheet{animation:saSheetUp .45s var(--sa-spring)}@keyframes saSheetUp{from{opacity:0;transform:translateY(42px) scale(.96)}to{opacity:1;transform:none}}
-.toast.on{animation:saToast .35s var(--sa-spring)}@keyframes saToast{from{opacity:0;transform:translate(-50%,14px) scale(.95)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
-.sa-onboard{animation:saOnboardFade .5s ease both}.sa-card{animation:saOnboardCard .65s var(--sa-spring) both}@keyframes saOnboardFade{from{opacity:0}to{opacity:1}}@keyframes saOnboardCard{from{opacity:0;transform:translateY(25px) scale(.96)}to{opacity:1;transform:none}}
-.sa-step.on{animation:saStepSlide .42s var(--sa-spring)!important}@keyframes saStepSlide{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:none}}
-.sa-opt,.choice,.mood,.setting-row{transition:transform .22s var(--sa-spring),background .22s ease,border-color .22s ease!important}
-.sa-opt.sel,.choice.sel,.mood.sel{animation:saSelect .32s var(--sa-spring)}@keyframes saSelect{50%{transform:scale(1.025)}}
-@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+:root{--sa-spring:cubic-bezier(.16,1,.3,1);--sa-purple:#7657f4;--sa-purple2:#a66cff;--sa-violet:#4a36c8;--sa-lilac:#efeaff;--sa-glow:#8f70ff55}
+body{background:#090b1d!important}.app{background:radial-gradient(circle at 8% 0%,#e7ddff 0 12%,transparent 34%),radial-gradient(circle at 100% 20%,#dffaf4 0 10%,transparent 32%),linear-gradient(180deg,#fbfaff,#f5f2ff 52%,#f8f9ff)!important}
+.app:before{content:"";position:fixed;inset:-35%;pointer-events:none;z-index:0;background:conic-gradient(from 160deg at 50% 50%,#7657ef18,#ba74ff15,#45d4bd10,#ef6dad0e,#7657ef18);filter:blur(75px);animation:saAurora 20s linear infinite}
+.app:after{content:"";position:fixed;pointer-events:none;z-index:0;width:260px;height:260px;border-radius:50%;right:-120px;top:18%;background:radial-gradient(circle,#8f70ff20,transparent 68%);animation:saDrift 7s ease-in-out infinite}
+@keyframes saAurora{to{transform:rotate(360deg) scale(1.08)}}@keyframes saDrift{50%{transform:translate(-28px,35px) scale(1.12)}}
+.screen{perspective:900px}.screen.on{animation:saPageIn .62s var(--sa-spring)!important}@keyframes saPageIn{from{opacity:0;transform:translate3d(0,26px,0) scale(.97) rotateX(2deg);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+.screen.on>.head,.screen.on>.top{animation:saTopIn .55s .04s var(--sa-spring) both}@keyframes saTopIn{from{opacity:0;transform:translateY(-13px)}to{opacity:1;transform:none}}
+.screen.on .section{animation:saFadeUp .5s .10s var(--sa-spring) both}.screen.on .card{animation:saCardIn .64s var(--sa-spring) both}.screen.on .card:nth-of-type(2){animation-delay:.06s}.screen.on .card:nth-of-type(3){animation-delay:.12s}.screen.on .card:nth-of-type(4){animation-delay:.18s}
+@keyframes saCardIn{from{opacity:0;transform:translateY(20px) scale(.965)}to{opacity:1;transform:none}}@keyframes saFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:linear-gradient(145deg,#ffffffeb,#fbf9ffdc)!important;border:1px solid #fff!important;box-shadow:0 18px 48px #51468e15,0 1px 0 #fff inset!important;will-change:transform;transition:transform .3s var(--sa-spring),box-shadow .3s ease,border-color .3s ease!important}.card:active{transform:scale(.975)!important}
+.hero,.offline-hero,.anonymous-hero{background:radial-gradient(circle at 85% 5%,#c790ff45,transparent 35%),radial-gradient(circle at 0% 100%,#46dbc731,transparent 40%),linear-gradient(145deg,#120f35,#21194e 58%,#5d3fb4)!important;box-shadow:0 28px 65px #261b692e!important}.hero{isolation:isolate}.hero:before{animation:heroOrb 5.5s ease-in-out infinite!important}.hero:after{animation:heroOrb 7s ease-in-out infinite reverse!important}.hero h2{animation:saFadeUp .65s .07s var(--sa-spring) both}.hero p{animation:saFadeUp .65s .14s var(--sa-spring) both}.hero .btn{animation:saFadeUp .65s .21s var(--sa-spring) both}
+.ring{background:conic-gradient(#72ead3 calc(var(--v)*1%),#ffffff18 0)!important;animation:saRing .95s var(--sa-spring)!important;box-shadow:0 0 0 1px #ffffff18 inset,0 20px 46px #0003,0 0 48px #75d9cc2f!important}@keyframes saRing{from{opacity:0;transform:scale(.62) rotate(-95deg)}to{opacity:1;transform:none}}.ring:after{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid #a98dff5c;animation:saRingPulse 2.6s ease-out infinite}@keyframes saRingPulse{0%{transform:scale(.87);opacity:.85}75%,100%{transform:scale(1.19);opacity:0}}
+.btn{transition:transform .2s var(--sa-spring),filter .2s ease,box-shadow .2s ease!important}.btn:active{transform:scale(.955)!important}.primary{background:linear-gradient(135deg,#8d6bff,#684ce5 55%,#9a62f4)!important;box-shadow:0 14px 32px #7054e845!important;animation:saButtonGlow 3.3s ease-in-out infinite}@keyframes saButtonGlow{50%{box-shadow:0 18px 38px #6b54e860,0 0 0 6px #7357f40b}}
+.quick,.setting-row,.test-card{transition:transform .22s var(--sa-spring),background .22s ease,border-color .22s ease!important}.quick:active,.setting-row:active,.test-card:active{transform:scale(.965)}.quick .qicon,.setting-icon.purple{background:linear-gradient(145deg,#eee8ff,#f8f4ff)!important;box-shadow:0 8px 20px #7657ef18}
+.bottom{background:#fffffff0!important;border-top:1px solid #e8e3f7!important;box-shadow:0 -14px 36px #342d6b12;animation:saNavUp .55s var(--sa-spring) both}@keyframes saNavUp{from{transform:translate(-50%,22px);opacity:0}to{transform:translate(-50%,0);opacity:1}}.nav.sel{color:#7458eb!important;animation:saNavPop .35s var(--sa-spring)}@keyframes saNavPop{50%{transform:translateY(-5px) scale(1.14)}}
+.modal{transition:opacity .25s ease!important}.modal.on .sheet{animation:saSheetUp .48s var(--sa-spring)}@keyframes saSheetUp{from{opacity:0;transform:translateY(45px) scale(.955)}to{opacity:1;transform:none}}.toast.on{animation:saToast .35s var(--sa-spring)}@keyframes saToast{from{opacity:0;transform:translate(-50%,14px) scale(.94)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+.sa-onboard{background:radial-gradient(circle at 5% 8%,#986cff66,transparent 30%),radial-gradient(circle at 94% 92%,#45d4bd3e,transparent 32%),linear-gradient(155deg,#090b23,#17123f 58%,#4a318f)!important;animation:saOnboardFade .5s ease both}.sa-card{border:1px solid #ffffff28!important;background:linear-gradient(145deg,#181333e8,#11172ee8)!important;box-shadow:0 35px 95px #0008,0 0 55px #8b68ff24!important;animation:saOnboardCard .68s var(--sa-spring) both}@keyframes saOnboardFade{from{opacity:0}to{opacity:1}}@keyframes saOnboardCard{from{opacity:0;transform:translateY(28px) scale(.955)}to{opacity:1;transform:none}}.sa-logo{box-shadow:0 15px 38px #7958ff55;animation:saLogoFloat 4s ease-in-out infinite}@keyframes saLogoFloat{50%{transform:translateY(-5px) rotate(4deg)}}.sa-step.on{animation:saStepSlide .44s var(--sa-spring)!important}@keyframes saStepSlide{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}.sa-opt.sel,.choice.sel,.mood.sel{animation:saSelect .32s var(--sa-spring)}@keyframes saSelect{50%{transform:scale(1.03)}}
+.sa-glow-dot{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:9999;background:#a98cff;box-shadow:0 0 14px #a98cff;animation:saDotOut .7s ease-out forwards}@keyframes saDotOut{to{opacity:0;transform:translateY(-28px) scale(.2)}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
 `;
 document.head.appendChild(style);
-
-const ripple=e=>{const b=e.currentTarget;if(!b||b.querySelector('.sa-ripple'))return;const r=document.createElement('i');r.className='sa-ripple';const rect=b.getBoundingClientRect();const size=Math.max(rect.width,rect.height)*1.4;r.style.cssText=`position:absolute;pointer-events:none;width:${size}px;height:${size}px;border-radius:50%;background:#fff4;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px;transform:scale(0);animation:saRipple .55s ease-out forwards`;b.style.position=b.style.position||'relative';b.style.overflow='hidden';b.appendChild(r);setTimeout(()=>r.remove(),600)};
 const rs=document.createElement('style');rs.textContent='@keyframes saRipple{to{transform:scale(1);opacity:0}}';document.head.appendChild(rs);
-document.addEventListener('pointerdown',e=>{const b=e.target.closest('button,.quick,.setting-row');if(b)ripple({currentTarget:b,clientX:e.clientX,clientY:e.clientY})},{passive:true});
+const ripple=e=>{const b=e.target.closest('button,.quick,.setting-row,.test-card');if(!b)return;const r=document.createElement('i'),rect=b.getBoundingClientRect(),size=Math.max(rect.width,rect.height)*1.45;r.className='sa-ripple';r.style.cssText=`position:absolute;pointer-events:none;width:${size}px;height:${size}px;border-radius:50%;background:#fff5;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px;transform:scale(0);animation:saRipple .55s ease-out forwards`;b.style.position=b.style.position||'relative';b.style.overflow='hidden';b.appendChild(r);setTimeout(()=>r.remove(),600)};
+document.addEventListener('pointerdown',e=>{ripple(e);if(Math.random()>.55){const d=document.createElement('i');d.className='sa-glow-dot';d.style.left=e.clientX+'px';d.style.top=e.clientY+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),750)}},{passive:true});
 })();
