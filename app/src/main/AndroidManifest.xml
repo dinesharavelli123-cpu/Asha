@@ -10,7 +10,7 @@
         android:usesCleartextTraffic="false"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
-        android:label="ASHA"
+        android:label="SAHAAY AI"
         android:theme="@style/Theme.ASHA">
         <activity
             android:name=".MainActivity"
