@@ -1,5 +1,6 @@
 (()=>{
 if(window.__saahayInputFix)return;window.__saahayInputFix=true;
+const guard=document.createElement('script');guard.src='startup_guard.js';guard.dataset.saGuard='1';document.head.appendChild(guard);
 const css=document.createElement('style');css.textContent=`
 input,textarea,select,[contenteditable="true"]{pointer-events:auto!important;touch-action:manipulation!important;-webkit-user-select:text!important;user-select:text!important;caret-color:#9b7cff!important;position:relative;z-index:2}
 input:focus,textarea:focus,select:focus,[contenteditable="true"]:focus{outline:none!important;box-shadow:0 0 0 3px rgba(137,99,255,.22),0 12px 30px rgba(80,44,170,.14)!important;border-color:#9b7cff!important}
