@@ -1,2 +1,5 @@
-const statusText=document.getElementById('statusText');
-setTimeout(()=>{statusText.textContent='SAHAAY AI is ready ✨';statusText.classList.add('ready');},1250);
+// Step 1 intentionally keeps JavaScript minimal.
+// The loading screen is driven by CSS so it cannot get stuck at 0% if a timer is throttled.
+window.addEventListener('load',()=>{
+  document.documentElement.dataset.saahayReady='1';
+});

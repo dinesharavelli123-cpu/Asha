@@ -3,24 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#1A1238" />
+  <meta name="theme-color" content="#100B2B" />
   <title>SAHAAY AI</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="launch-screen">
-    <div class="glow glow-one"></div>
-    <div class="glow glow-two"></div>
-    <section class="brand-stage">
-      <div class="orbit"><i></i><i></i><i></i></div>
-      <div class="logo-card">S</div>
+  <section class="home-preview" aria-label="SAHAAY AI foundation screen">
+    <div class="preview-glow"></div>
+    <img class="preview-logo" src="saahay_logo.jpg" alt="SAHAAY AI logo" />
+    <p class="preview-kicker">SAHAAY AI</p>
+    <h1>Support • Calm • Grow</h1>
+    <p class="preview-copy">The clean SAHAAY foundation is ready. Signup and the full dashboard come next.</p>
+    <div class="preview-pill">Step 1 complete ✓</div>
+  </section>
+
+  <section class="launch-screen" aria-label="SAHAAY AI loading screen">
+    <div class="aurora aurora-a"></div>
+    <div class="aurora aurora-b"></div>
+    <div class="star-field"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+    <div class="brand-stage">
+      <div class="logo-stage">
+        <div class="orbit orbit-one"><b></b></div>
+        <div class="orbit orbit-two"><b></b></div>
+        <div class="halo"></div>
+        <img class="saahay-logo" src="saahay_logo.jpg" alt="SAHAAY AI" />
+        <span class="twinkle t1">✦</span>
+        <span class="twinkle t2">✧</span>
+        <span class="twinkle t3">✦</span>
+      </div>
+
       <p class="kicker">YOUR PRIVATE SUPPORT COMPANION</p>
       <h1>SAHAAY AI</h1>
       <p class="tagline">Support • Calm • Grow</p>
-      <div class="loader"><span></span></div>
-      <small id="statusText">Starting fresh…</small>
-    </section>
-  </main>
+
+      <div class="loader" aria-hidden="true"><span></span></div>
+      <small>Opening your space…</small>
+    </div>
+  </section>
+
   <script src="app.js"></script>
 </body>
 </html>
