@@ -81,6 +81,11 @@ public class MainActivity extends Activity {
                     catch (Exception ignored) {}
                     return true;
                 }
+                if (request.isForMainFrame() && "tel".equals(scheme)) {
+                    try { startActivity(new Intent(Intent.ACTION_DIAL, uri)); }
+                    catch (Exception ignored) {}
+                    return true;
+                }
                 return false;
             }
         });
@@ -181,7 +186,8 @@ public class MainActivity extends Activity {
     public class NativeBridge {
         @JavascriptInterface public void hapticSOS() { runOnUiThread(() -> { Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE); if (v != null && v.hasVibrator()) { if (Build.VERSION.SDK_INT >= 26) v.vibrate(VibrationEffect.createWaveform(new long[]{0,140,80,140}, -1)); else v.vibrate(new long[]{0,140,80,140}, -1); } }); }
         @JavascriptInterface public void openEmergencyDialer() { runOnUiThread(() -> { try { startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:112"))); } catch (Exception e) { Toast.makeText(MainActivity.this, "Emergency dialer unavailable", Toast.LENGTH_SHORT).show(); } }); }
-        @JavascriptInterface public void shareSupportMessage() { runOnUiThread(() -> { Intent i = new Intent(Intent.ACTION_SEND); i.setType("text/plain"); i.putExtra(Intent.EXTRA_TEXT, "I would like someone I trust to check in with me. — ASHA"); startActivity(Intent.createChooser(i, "Contact someone you trust")); }); }
+        @JavascriptInterface public void openDialer(String number) { runOnUiThread(() -> { try { String safe = number == null ? "" : number.replaceAll("[^0-9+]", ""); startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + safe))); } catch (Exception e) { Toast.makeText(MainActivity.this, "Phone dialer unavailable", Toast.LENGTH_SHORT).show(); } }); }
+        @JavascriptInterface public void shareSupportMessage() { runOnUiThread(() -> { Intent i = new Intent(Intent.ACTION_SEND); i.setType("text/plain"); i.putExtra(Intent.EXTRA_TEXT, "I would like someone I trust to check in with me. — SAHAAY AI"); startActivity(Intent.createChooser(i, "Contact someone you trust")); }); }
         @JavascriptInterface public void startVoiceRecognition() { runOnUiThread(() -> { if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) { voicePending = true; requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_REQUEST); } else launchVoiceRecognition(); }); }
         @JavascriptInterface public void requestSleepAccess() { runOnUiThread(() -> refreshSleepDataInternal(true)); }
         @JavascriptInterface public void refreshSleepData() { runOnUiThread(() -> refreshSleepDataInternal(false)); }
