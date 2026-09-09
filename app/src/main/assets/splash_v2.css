@@ -1,0 +1,296 @@
+/* SAHAAY STEP 1 — premium animated splash screen.
+   Isolated from the rest of the app so Firebase/auth/dashboard code stays untouched. */
+
+#saahaySplash.launch-screen{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  isolation:isolate;
+  opacity:1;
+  visibility:visible;
+  animation:none!important;
+  background:
+    radial-gradient(circle at 82% 22%,rgba(255,229,190,.95) 0 5%,rgba(255,194,211,.48) 17%,transparent 38%),
+    radial-gradient(circle at 14% 78%,rgba(122,203,255,.56),transparent 34%),
+    linear-gradient(135deg,#78c8ff 0%,#9c9bff 34%,#e7a7e8 66%,#ffc5a7 100%);
+  background-size:180% 180%;
+  animation:splashGradient 9s ease-in-out infinite!important;
+  color:#fff;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+
+#saahaySplash::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:20;
+  pointer-events:none;
+  background:rgba(18,16,42,.48);
+  backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);
+  animation:splashWake .95s cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+#saahaySplash.splash-leaving{
+  animation:splashLeave .58s cubic-bezier(.4,0,.2,1) forwards!important;
+}
+
+.splash-blob{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(35px);
+  opacity:.38;
+  will-change:transform;
+  pointer-events:none;
+}
+.splash-blob-a{width:280px;height:280px;left:-110px;top:8%;background:#d5eaff;animation:blobDriftA 8s ease-in-out infinite alternate}
+.splash-blob-b{width:320px;height:320px;right:-125px;top:30%;background:#ffd0e5;animation:blobDriftB 9.5s ease-in-out infinite alternate}
+.splash-blob-c{width:300px;height:300px;left:18%;bottom:-170px;background:#a68dff;opacity:.24;animation:blobDriftC 10s ease-in-out infinite alternate}
+
+.splash-particle-layer,.splash-petal-layer,.splash-star-layer{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+.splash-particle{
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  width:var(--s);
+  height:var(--s);
+  border-radius:50%;
+  background:rgba(255,255,255,.58);
+  box-shadow:0 0 18px rgba(255,255,255,.55);
+  opacity:.2;
+  animation:particleFloat var(--d) ease-in-out var(--delay) infinite alternate;
+}
+
+.splash-petal{
+  position:absolute;
+  left:var(--x);
+  top:-12%;
+  width:var(--w);
+  height:calc(var(--w) * .58);
+  border-radius:85% 15% 85% 15%;
+  background:linear-gradient(135deg,rgba(255,255,255,.86),rgba(255,190,226,.72));
+  filter:drop-shadow(0 5px 10px rgba(111,76,155,.15));
+  opacity:.68;
+  animation:petalFall var(--d) linear var(--delay) infinite;
+}
+
+.splash-star{
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  width:var(--s);
+  height:var(--s);
+  transform:rotate(45deg);
+  border-radius:2px;
+  background:#fff7d8;
+  box-shadow:0 0 14px rgba(255,249,219,.95);
+  animation:starGlow var(--d) ease-in-out var(--delay) infinite alternate;
+}
+.splash-star::before,.splash-star::after{content:"";position:absolute;inset:0;border-radius:50%;background:inherit}
+.splash-star::before{transform:scaleX(.34)}
+.splash-star::after{transform:scaleY(.34)}
+
+.splash-content{
+  position:relative;
+  z-index:10;
+  width:min(92vw,440px);
+  min-height:100%;
+  padding:max(38px,env(safe-area-inset-top)) 24px max(34px,env(safe-area-inset-bottom));
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+.splash-logo-stage{
+  position:relative;
+  width:238px;
+  height:238px;
+  display:grid;
+  place-items:center;
+  margin-top:auto;
+  animation:splashLogoArrival .92s .14s cubic-bezier(.18,.88,.28,1.28) both;
+}
+
+.splash-aura{
+  position:absolute;
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.62) 0%,rgba(229,203,255,.42) 38%,rgba(255,180,220,.18) 58%,transparent 72%);
+  filter:blur(3px);
+  animation:auraBreathe 2.8s ease-in-out infinite alternate;
+}
+
+.splash-orbit{
+  position:absolute;
+  width:226px;
+  height:176px;
+  border:1.5px solid rgba(255,255,255,.64);
+  border-radius:50%;
+  transform:rotate(-17deg);
+  filter:drop-shadow(0 0 7px rgba(255,255,255,.5));
+  animation:orbitSpin 4.8s linear infinite;
+}
+.splash-orbit i{
+  position:absolute;
+  right:18px;
+  top:30px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#fff9df;
+  box-shadow:0 0 0 4px rgba(255,255,255,.13),0 0 20px #fff4ca;
+}
+
+.splash-logo-float{position:relative;z-index:4;animation:logoFloatV2 2.7s 1.05s ease-in-out infinite alternate}
+.splash-logo{
+  width:152px;
+  height:152px;
+  display:block;
+  object-fit:cover;
+  border-radius:39px;
+  box-shadow:0 25px 70px rgba(57,35,112,.34),0 0 44px rgba(255,255,255,.52);
+  animation:logoBreathe 3.1s 1.05s ease-in-out infinite alternate;
+}
+
+.splash-sparkle{
+  position:absolute;
+  z-index:7;
+  font-style:normal;
+  color:#fff9dc;
+  text-shadow:0 0 14px #fff,0 0 24px rgba(255,217,153,.8);
+  animation:sparklePop 1.35s ease-in-out infinite alternate;
+}
+.splash-s1{left:22px;top:48px;font-size:22px}
+.splash-s2{right:21px;top:68px;font-size:15px;animation-delay:.34s}
+.splash-s3{right:42px;bottom:36px;font-size:19px;animation-delay:.68s}
+.splash-s4{left:48px;bottom:42px;font-size:12px;animation-delay:.17s}
+
+.splash-reflection{
+  position:relative;
+  width:208px;
+  height:30px;
+  margin-top:-6px;
+}
+.splash-reflection::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:4px;
+  width:82px;
+  height:10px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:rgba(255,255,255,.34);
+  filter:blur(6px);
+}
+.splash-reflection span{
+  position:absolute;
+  left:50%;
+  top:7px;
+  width:92px;
+  height:20px;
+  border:1px solid rgba(255,255,255,.58);
+  border-radius:50%;
+  transform:translateX(-50%) scale(.45);
+  opacity:0;
+  animation:reflectionRipple 2.6s ease-out 1.05s infinite;
+}
+.splash-reflection span:nth-child(2){animation-delay:2.1s}
+
+.splash-copy{animation:splashTextRise .62s .82s cubic-bezier(.2,.8,.2,1) both}
+.splash-title{
+  margin:4px 0 3px;
+  font-size:clamp(36px,11vw,48px);
+  line-height:1;
+  letter-spacing:.095em;
+  font-weight:900;
+  text-shadow:0 8px 26px rgba(78,50,129,.22);
+}
+.splash-tagline{
+  margin:10px 0 0;
+  font-size:13px;
+  font-weight:650;
+  letter-spacing:.055em;
+  color:rgba(255,255,255,.94);
+}
+
+.splash-loading{
+  margin-top:auto;
+  padding-top:48px;
+  animation:splashTextRise .55s 1.12s ease both;
+}
+.splash-loading p{
+  margin:0 0 12px;
+  color:rgba(255,255,255,.9);
+  font-size:11px;
+  font-weight:650;
+  letter-spacing:.03em;
+}
+.splash-dots{display:flex;justify-content:center;gap:8px;height:10px}
+.splash-dots span{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:rgba(255,255,255,.38);
+  box-shadow:0 0 0 rgba(255,255,255,0);
+  animation:dotGlow 1.08s ease-in-out infinite;
+}
+.splash-dots span:nth-child(2){animation-delay:.18s}
+.splash-dots span:nth-child(3){animation-delay:.36s}
+
+.splash-touch-ripple{
+  position:absolute;
+  z-index:30;
+  width:18px;
+  height:18px;
+  margin:-9px 0 0 -9px;
+  border:1.5px solid rgba(255,255,255,.7);
+  border-radius:50%;
+  pointer-events:none;
+  animation:touchRipple .7s ease-out forwards;
+}
+
+#saahaySplash.splash-leaving .splash-logo-stage{animation:splashFinalLogo .58s cubic-bezier(.2,.75,.2,1) forwards}
+#saahaySplash.splash-leaving .splash-content{filter:brightness(1.1)}
+
+@keyframes splashWake{0%{opacity:1;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}100%{opacity:0;backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0)}}
+@keyframes splashGradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes blobDriftA{to{transform:translate(65px,45px) scale(1.12)}}
+@keyframes blobDriftB{to{transform:translate(-70px,-35px) scale(.92)}}
+@keyframes blobDriftC{to{transform:translate(45px,-38px) scale(1.08)}}
+@keyframes particleFloat{from{transform:translate3d(0,8px,0) scale(.75);opacity:.12}to{transform:translate3d(12px,-20px,0) scale(1.15);opacity:.55}}
+@keyframes petalFall{0%{transform:translate3d(0,-10vh,0) rotate(0deg);opacity:0}12%{opacity:.68}100%{transform:translate3d(var(--drift),118vh,0) rotate(560deg);opacity:.05}}
+@keyframes starGlow{from{opacity:.2;transform:rotate(45deg) scale(.55)}to{opacity:1;transform:rotate(45deg) scale(1.08)}}
+@keyframes splashLogoArrival{0%{opacity:0;transform:scale(.7) translateY(12px)}72%{opacity:1;transform:scale(1.08) translateY(-2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes logoFloatV2{to{transform:translateY(-8px)}}
+@keyframes logoBreathe{to{transform:scale(1.018);box-shadow:0 30px 76px rgba(57,35,112,.3),0 0 58px rgba(255,255,255,.68)}}
+@keyframes auraBreathe{to{transform:scale(1.13);opacity:.72}}
+@keyframes orbitSpin{from{transform:rotate(-17deg)}to{transform:rotate(343deg)}}
+@keyframes sparklePop{from{opacity:.18;transform:scale(.55) rotate(-10deg)}to{opacity:1;transform:scale(1.28) rotate(10deg)}}
+@keyframes reflectionRipple{0%{opacity:.72;transform:translateX(-50%) scale(.42)}100%{opacity:0;transform:translateX(-50%) scale(1.9)}}
+@keyframes splashTextRise{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dotGlow{0%,100%{transform:scale(.72);background:rgba(255,255,255,.28);box-shadow:0 0 0 rgba(255,255,255,0)}45%{transform:scale(1.18);background:#fff;box-shadow:0 0 15px rgba(255,255,255,.95)}}
+@keyframes touchRipple{0%{opacity:.85;transform:scale(.2)}100%{opacity:0;transform:scale(6)}}
+@keyframes splashFinalLogo{to{transform:scale(1.075);filter:brightness(1.08)}}
+@keyframes splashLeave{0%{opacity:1;filter:brightness(1)}45%{filter:brightness(1.12)}100%{opacity:0;filter:brightness(1.14);visibility:hidden;pointer-events:none}}
+
+@media(max-height:650px){
+  .splash-logo-stage{width:205px;height:205px}.splash-logo{width:132px;height:132px;border-radius:34px}.splash-orbit{width:198px;height:150px}.splash-aura{width:168px;height:168px}.splash-loading{padding-top:28px}.splash-title{font-size:34px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #saahaySplash.launch-screen,.splash-blob,.splash-particle,.splash-petal,.splash-star,.splash-logo-stage,.splash-aura,.splash-orbit,.splash-logo-float,.splash-logo,.splash-sparkle,.splash-reflection span,.splash-copy,.splash-loading,.splash-dots span{animation-duration:.01ms!important;animation-iteration-count:1!important}
+  #saahaySplash::after{animation:splashWake .25s forwards!important}
+}
