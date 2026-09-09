@@ -29,6 +29,8 @@ const stars=['✦','✧','•','✶'];document.addEventListener('pointerdown',e=
 
 // Load the actual playable 16-game engine. This was previously present in assets but not loaded by app startup.
 if(!window.__saahayMindGamesV2 && !document.querySelector('script[data-sa-mindgames]')){const g=document.createElement('script');g.src='mind_games_v2.js';g.dataset.saMindgames='1';document.body.appendChild(g)}
+// Load the corrected Mind Calm controller after all calm UIs so START/PAUSE/RESUME works reliably on Android.
+if(!document.querySelector('script[data-sa-calmfix]')){const c=document.createElement('script');c.src='mind_calm_fix.js';c.dataset.saCalmfix='1';document.body.appendChild(c)}
 
 function ensureGameEntry(){const home=document.getElementById('home');if(!home||document.getElementById('saGamesEntry'))return;const games=document.getElementById('games');if(!games)return;const box=document.createElement('div');box.id='saGamesEntry';box.innerHTML=`<div class="section"><h3>Play & train</h3><small>fully interactive</small></div><div class="quick-row"><div class="card quick" onclick="go('games')"><div class="qicon">🎮</div><div><b>Mind Games</b><small class="mut">16 playable activities</small></div></div><div class="card quick" onclick="go('mindcalm')"><div class="qicon">🫧</div><div><b>Calm Tools</b><small class="mut">quick reset exercises</small></div></div></div>`;home.appendChild(box)}
 function cleanDuplicateFab(){const dup=document.getElementById('saAiFab');if(dup)dup.remove()}
