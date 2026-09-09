@@ -1,7 +1,13 @@
 package com.saahay.ai;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
@@ -17,6 +23,8 @@ public class MainActivity extends Activity {
     private WebView webView;
     private FirebaseAuth auth;
     private SharedPreferences prefs;
+    private static final int LOCATION_PERMISSION_REQUEST = 9301;
+    private boolean locationSharePending = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,13 +32,19 @@ public class MainActivity extends Activity {
         auth = FirebaseAuth.getInstance();
         prefs = getSharedPreferences("saahay_prefs", MODE_PRIVATE);
         webView = new WebView(this);
+        webView.setFocusable(true);
+        webView.setFocusableInTouchMode(true);
+        webView.setClickable(true);
         setContentView(webView);
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+        settings.setTextZoom(100);
         webView.addJavascriptInterface(new AuthBridge(), "SAHAAYAuth");
+        webView.addJavascriptInterface(new DeviceBridge(), "SAHAAYDevice");
         webView.setWebViewClient(new WebViewClient() {
             @Override public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
@@ -56,6 +70,41 @@ public class MainActivity extends Activity {
     private void sendError(Exception e) {
         String message = e == null || e.getLocalizedMessage() == null ? "Something went wrong. Please try again." : e.getLocalizedMessage();
         runOnUiThread(() -> webView.evaluateJavascript("window.saahayAuthError(" + jsString(message) + ");", null));
+    }
+
+    private void sendLocationError(String message) {
+        runOnUiThread(() -> webView.evaluateJavascript("window.saahayLocationError && window.saahayLocationError(" + jsString(message) + ");", null));
+    }
+
+    private void shareLastKnownLocation() {
+        try {
+            if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                sendLocationError("Location permission is required only when you choose to share your location.");
+                return;
+            }
+            LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+            Location best = null;
+            if (lm != null) {
+                try {
+                    Location network = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    Location gps = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (network != null) best = network;
+                    if (gps != null && (best == null || gps.getTime() > best.getTime())) best = gps;
+                } catch (SecurityException ignored) {}
+            }
+            if (best == null) {
+                sendLocationError("Current location is not available yet. Turn on Location and try again.");
+                return;
+            }
+            String maps = "https://maps.google.com/?q=" + best.getLatitude() + "," + best.getLongitude();
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("text/plain");
+            share.putExtra(Intent.EXTRA_TEXT, "My current location: " + maps);
+            startActivity(Intent.createChooser(share, "Share current location"));
+            webView.evaluateJavascript("window.saahayLocationShared && window.saahayLocationShared();", null);
+        } catch (Exception e) {
+            sendLocationError("Location could not be shared. Please try again.");
+        }
     }
 
     public class AuthBridge {
@@ -87,6 +136,29 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface public void logOut() {
             runOnUiThread(() -> { auth.signOut(); webView.evaluateJavascript("window.saahayLoggedOut();", null); });
+        }
+    }
+
+    public class DeviceBridge {
+        @JavascriptInterface public void requestAndShareLocation() {
+            runOnUiThread(() -> {
+                if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    locationSharePending = true;
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST);
+                } else shareLastKnownLocation();
+            });
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST) {
+            boolean granted = false;
+            for (int r : grantResults) if (r == PackageManager.PERMISSION_GRANTED) { granted = true; break; }
+            if (locationSharePending && granted) shareLastKnownLocation();
+            else if (locationSharePending) sendLocationError("Location permission was not granted.");
+            locationSharePending = false;
         }
     }
 
