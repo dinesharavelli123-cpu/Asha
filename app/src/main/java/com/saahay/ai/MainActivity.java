@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -19,12 +20,18 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Locale;
+
 public class MainActivity extends Activity {
     private WebView webView;
     private FirebaseAuth auth;
     private SharedPreferences prefs;
     private static final int LOCATION_PERMISSION_REQUEST = 9301;
+    private static final int AUDIO_PERMISSION_REQUEST = 9302;
+    private static final int SPEECH_REQUEST = 9303;
     private boolean locationSharePending = false;
+    private boolean voicePending = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +114,18 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void startVoiceRecognizer() {
+        try {
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak your reflection");
+            startActivityForResult(intent, SPEECH_REQUEST);
+        } catch (Exception e) {
+            webView.evaluateJavascript("window.saahayVoiceError && window.saahayVoiceError();", null);
+        }
+    }
+
     public class AuthBridge {
         @JavascriptInterface public void signUp(String email, String password) {
             runOnUiThread(() -> auth.createUserWithEmailAndPassword(email.trim(), password)
@@ -148,6 +167,15 @@ public class MainActivity extends Activity {
                 } else shareLastKnownLocation();
             });
         }
+
+        @JavascriptInterface public void startVoiceInput() {
+            runOnUiThread(() -> {
+                if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    voicePending = true;
+                    requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_PERMISSION_REQUEST);
+                } else startVoiceRecognizer();
+            });
+        }
     }
 
     @Override
@@ -159,6 +187,25 @@ public class MainActivity extends Activity {
             if (locationSharePending && granted) shareLastKnownLocation();
             else if (locationSharePending) sendLocationError("Location permission was not granted.");
             locationSharePending = false;
+        } else if (requestCode == AUDIO_PERMISSION_REQUEST) {
+            boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            if (voicePending && granted) startVoiceRecognizer();
+            else if (voicePending) webView.evaluateJavascript("window.saahayVoiceError && window.saahayVoiceError();", null);
+            voicePending = false;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SPEECH_REQUEST) {
+            if (resultCode == RESULT_OK && data != null) {
+                ArrayList<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                String text = (results != null && !results.isEmpty()) ? results.get(0) : "";
+                webView.evaluateJavascript("window.saahayVoiceResult && window.saahayVoiceResult(" + jsString(text) + ");", null);
+            } else {
+                webView.evaluateJavascript("window.saahayVoiceError && window.saahayVoiceError();", null);
+            }
         }
     }
 
