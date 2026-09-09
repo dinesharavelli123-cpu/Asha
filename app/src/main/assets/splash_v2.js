@@ -1,86 +1,94 @@
-/* SAHAAY STEP 1 — splash-only JavaScript.
-   This file does not touch Firebase, onboarding, login, dashboard, journal or games. */
+/* SAHAAY screens 1–4. Authentication and dashboard state are intentionally untouched. */
 (()=>{
-  const SPLASH_VISIBLE_MS=3400;
-  const SPLASH_REMOVE_MS=4050;
+  const SPLASH_MS=3500;
+  const COMPLETE_KEY='saahay_intro_complete_v1';
+  let page=0,startX=0,locked=false;
 
-  function makeVisualParticles(root){
-    const particleLayer=root.querySelector('.splash-particle-layer');
-    const petalLayer=root.querySelector('.splash-petal-layer');
-    const starLayer=root.querySelector('.splash-star-layer');
+  const root=()=>document.getElementById('saahaySplash');
+  const pages=()=>[...document.querySelectorAll('[data-intro-page]')];
 
-    if(particleLayer){
-      for(let i=0;i<14;i++){
-        const p=document.createElement('i');
-        p.className='splash-particle';
-        p.style.setProperty('--x',(6+Math.random()*88).toFixed(1)+'%');
-        p.style.setProperty('--y',(8+Math.random()*82).toFixed(1)+'%');
-        p.style.setProperty('--s',(3+Math.random()*5).toFixed(1)+'px');
-        p.style.setProperty('--d',(3.8+Math.random()*3.8).toFixed(2)+'s');
-        p.style.setProperty('--delay',(-Math.random()*4).toFixed(2)+'s');
-        particleLayer.appendChild(p);
-      }
+  function addAtmosphere(host){
+    const stars=host.querySelector('.intro-stars');
+    const petals=host.querySelector('.intro-petals');
+    for(let i=0;i<15;i++){
+      const star=document.createElement('i');
+      star.style.left=(5+Math.random()*90)+'%';
+      star.style.top=(5+Math.random()*54)+'%';
+      star.style.setProperty('--d',(1.4+Math.random()*2.4)+'s');
+      star.style.setProperty('--delay',(-Math.random()*3)+'s');
+      stars.appendChild(star);
     }
-
-    if(petalLayer){
-      for(let i=0;i<7;i++){
-        const petal=document.createElement('i');
-        petal.className='splash-petal';
-        petal.style.setProperty('--x',(4+Math.random()*92).toFixed(1)+'%');
-        petal.style.setProperty('--w',(10+Math.random()*11).toFixed(1)+'px');
-        petal.style.setProperty('--d',(7.5+Math.random()*5).toFixed(2)+'s');
-        petal.style.setProperty('--delay',(-Math.random()*9).toFixed(2)+'s');
-        petal.style.setProperty('--drift',(-35+Math.random()*70).toFixed(1)+'px');
-        petalLayer.appendChild(petal);
-      }
-    }
-
-    if(starLayer){
-      for(let i=0;i<10;i++){
-        const star=document.createElement('i');
-        star.className='splash-star';
-        star.style.setProperty('--x',(7+Math.random()*86).toFixed(1)+'%');
-        star.style.setProperty('--y',(6+Math.random()*74).toFixed(1)+'%');
-        star.style.setProperty('--s',(4+Math.random()*5).toFixed(1)+'px');
-        star.style.setProperty('--d',(1.2+Math.random()*1.9).toFixed(2)+'s');
-        star.style.setProperty('--delay',(-Math.random()*2).toFixed(2)+'s');
-        starLayer.appendChild(star);
-      }
+    for(let i=0;i<8;i++){
+      const petal=document.createElement('i');
+      petal.style.setProperty('--x',(2+Math.random()*96)+'%');
+      petal.style.setProperty('--w',(10+Math.random()*12)+'px');
+      petal.style.setProperty('--d',(8+Math.random()*6)+'s');
+      petal.style.setProperty('--delay',(-Math.random()*12)+'s');
+      petal.style.setProperty('--drift',(-55+Math.random()*110)+'px');
+      petals.appendChild(petal);
     }
   }
 
-  function bindTouchRipple(root){
-    root.addEventListener('pointerdown',event=>{
-      const r=document.createElement('span');
-      r.className='splash-touch-ripple';
-      const rect=root.getBoundingClientRect();
-      r.style.left=(event.clientX-rect.left)+'px';
-      r.style.top=(event.clientY-rect.top)+'px';
-      root.appendChild(r);
-      setTimeout(()=>r.remove(),760);
-    },{passive:true});
+  function paint(next){
+    if(next<1||next>3||locked)return;
+    locked=true;
+    const all=pages();
+    all.forEach((node,index)=>{
+      node.classList.toggle('is-active',index===next);
+      node.classList.toggle('is-behind',index<next);
+    });
+    page=next;
+    root().classList.add('is-onboarding');
+    document.querySelectorAll('.intro-dots i').forEach((dot,index)=>dot.classList.toggle('is-current',index===page-1));
+    const button=document.getElementById('introNext');
+    button.querySelector('span').textContent=page===3?'Get Started':'Next';
+    button.querySelector('i').textContent=page===3?'✓':'→';
+    setTimeout(()=>locked=false,720);
   }
 
-  function finishSplash(root){
-    if(!root||root.classList.contains('splash-leaving'))return;
-    root.classList.add('splash-leaving');
+  function finish(){
+    const host=root();
+    if(!host||host.classList.contains('intro-finished'))return;
+    localStorage.setItem(COMPLETE_KEY,'1');
+    host.classList.add('intro-finished');
     window.dispatchEvent(new CustomEvent('saahaySplashLeaving'));
-  }
-
-  function initSplash(){
-    const root=document.getElementById('saahaySplash');
-    if(!root)return;
-
-    makeVisualParticles(root);
-    bindTouchRipple(root);
-
-    setTimeout(()=>finishSplash(root),SPLASH_VISIBLE_MS);
     setTimeout(()=>{
-      if(root&&root.parentNode)root.remove();
+      host.remove();
       window.dispatchEvent(new CustomEvent('saahaySplashFinished'));
-    },SPLASH_REMOVE_MS);
+    },760);
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSplash,{once:true});
-  else initSplash();
+  function advance(){
+    if(page<3)paint(page+1);else finish();
+  }
+
+  function ripple(event){
+    const host=root();
+    if(!host)return;
+    const mark=document.createElement('i');
+    mark.className='intro-touch-ripple';
+    mark.style.left=event.clientX+'px';
+    mark.style.top=event.clientY+'px';
+    host.appendChild(mark);
+    setTimeout(()=>mark.remove(),760);
+  }
+
+  function init(){
+    const host=root();
+    if(!host)return;
+    addAtmosphere(host);
+    host.addEventListener('pointerdown',event=>{startX=event.clientX;ripple(event)},{passive:true});
+    host.addEventListener('pointerup',event=>{
+      const travel=event.clientX-startX;
+      if(page>0&&travel<-54)advance();
+      if(page>1&&travel>54)paint(page-1);
+    },{passive:true});
+    document.getElementById('introNext').addEventListener('click',advance);
+
+    const alreadySeen=localStorage.getItem(COMPLETE_KEY)==='1';
+    setTimeout(()=>alreadySeen?finish():paint(1),SPLASH_MS);
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
 })();

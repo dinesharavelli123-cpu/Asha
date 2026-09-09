@@ -17,32 +17,103 @@
 <section class="dashboard screen hidden" id="dashboard"><div class="dash-bg-orb orb-a"></div><div class="dash-bg-orb orb-b"></div><div class="dash-scroll"><header class="dash-header"><div><p class="preview-kicker small-kicker">SAHAAY AI</p><h2 id="helloName">Hello ✦</h2><p class="dash-sub">Your private support space</p></div><button class="logo-button" data-open="profile"><img class="dash-logo" src="saahay_logo.jpg" alt="SAHAAY AI"></button></header><div class="hero-card animated-card"><div class="hero-top"><div><p>YOUR SPACE TODAY</p><h3>How are you feeling?</h3></div><div class="wellbeing-orb"><span id="wellbeingScore">—</span><small>check-in</small></div></div><div class="moods" id="moodButtons"><button data-mood="Great" data-score="5">😊<small>Great</small></button><button data-mood="Calm" data-score="4">😌<small>Calm</small></button><button data-mood="Okay" data-score="3">🙂<small>Okay</small></button><button data-mood="Low" data-score="2">😕<small>Low</small></button><button data-mood="Tough" data-score="1">😟<small>Tough</small></button></div><p class="micro-status" id="moodStatus">Tap once to start today’s quick check-in.</p></div><div class="section-row"><h3>Quick support</h3><button data-open="allFeatures">See all</button></div><div class="quick-grid"><button class="feature-card companion-card" data-open="companion"><span>✦</span><b>AI Companion</b><small>Talk it out</small><i>→</i></button><button class="feature-card" data-open="calm"><span>◌</span><b>Mind Calm</b><small>Breathe & reset</small><i>→</i></button><button class="feature-card" data-open="sleep"><span>☾</span><b>Sleep</b><small>Wind down</small><i>→</i></button><button class="feature-card" data-open="journal"><span>✎</span><b>Journal</b><small>Guided reflection</small><i>→</i></button></div><div class="insight-card animated-card"><div class="insight-icon">⌁</div><div><p>SAHAAY INSIGHT</p><h4 id="insightTitle">Start with one small check-in</h4><span id="insightText">As you use SAHAAY, your local patterns and preferred tools will appear here.</span></div><button data-open="patterns">›</button></div><div class="section-row"><h3>Explore SAHAAY</h3><span>Built around you</span></div><div class="feature-list"><button data-open="grounding"><em>54321</em><div><b>Grounding Game</b><small>Notice the present moment</small></div><i>›</i></button><button data-open="games"><em>◈</em><div><b>Mind Games</b><small>Challenging + calming games</small></div><i>›</i></button><button data-open="growth"><em>↗</em><div><b>Growth Journey</b><small>XP, thoughts and progress</small></div><i>›</i></button><button data-open="hope"><em>♡</em><div><b>Hope Vault</b><small>Save good moments and reminders</small></div><i>›</i></button><button data-open="shield"><em>⛨</em><div><b>My Shield</b><small>Trusted support, location and helplines</small></div><i>›</i></button></div></div><nav class="bottom-nav"><button class="active" data-tab="home"><span>⌂</span>Home</button><button data-open="growth"><span>↗</span>Journey</button><button data-open="vault"><span>▣</span>Vault</button><button data-open="shield"><span>⛨</span>Shield</button><button data-open="allFeatures"><span>•••</span>More</button></nav></section>
 <section class="module-page screen hidden" id="modulePage"><div class="module-glow"></div><header class="module-header"><button class="module-back" id="moduleBack">‹</button><div><p class="preview-kicker small-kicker" id="moduleKicker">SAHAAY AI</p><h2 id="moduleTitle">Feature</h2></div><img class="mini-logo" src="saahay_logo.jpg" alt="SAHAAY AI"></header><main id="moduleContent" class="module-content"></main></section>
 
-<section class="launch-screen" id="saahaySplash" aria-label="SAHAAY is opening">
-  <div class="splash-blob splash-blob-a" aria-hidden="true"></div>
-  <div class="splash-blob splash-blob-b" aria-hidden="true"></div>
-  <div class="splash-blob splash-blob-c" aria-hidden="true"></div>
-  <div class="splash-particle-layer" aria-hidden="true"></div>
-  <div class="splash-petal-layer" aria-hidden="true"></div>
-  <div class="splash-star-layer" aria-hidden="true"></div>
-  <div class="splash-content">
-    <div class="splash-logo-stage">
-      <div class="splash-aura" aria-hidden="true"></div>
-      <div class="splash-orbit" aria-hidden="true"><i></i></div>
-      <div class="splash-logo-float"><img class="splash-logo" src="saahay_logo.jpg" alt="SAHAAY"></div>
-      <i class="splash-sparkle splash-s1" aria-hidden="true">✦</i>
-      <i class="splash-sparkle splash-s2" aria-hidden="true">✦</i>
-      <i class="splash-sparkle splash-s3" aria-hidden="true">✧</i>
-      <i class="splash-sparkle splash-s4" aria-hidden="true">✦</i>
+<section class="saahay-intro launch-screen" id="saahaySplash" aria-label="Welcome to SAHAAY">
+  <div class="intro-scenery" aria-hidden="true">
+    <div class="intro-sky"></div>
+    <div class="intro-sun"></div>
+    <div class="intro-cloud intro-cloud-one"></div>
+    <div class="intro-cloud intro-cloud-two"></div>
+    <div class="intro-stars"></div>
+    <div class="intro-mountains intro-mountains-back"></div>
+    <div class="intro-mountains intro-mountains-front"></div>
+    <div class="intro-lake"><i></i><i></i><i></i><i></i></div>
+    <div class="intro-sun-path"></div>
+    <div class="intro-mist"></div>
+    <div class="intro-petals"></div>
+  </div>
+
+  <div class="intro-pages" aria-live="polite">
+    <article class="intro-page splash-page is-active" data-intro-page="0">
+      <div class="brand-orbit-stage">
+        <div class="brand-aura"></div>
+        <div class="brand-orbit orbit-one"><i></i><b></b></div>
+        <div class="brand-orbit orbit-two"><i></i></div>
+        <img class="brand-reference" src="saahay_brand_reference.jpg" alt="SAHAAY lotus S logo">
+        <span class="brand-star brand-star-one">✦</span>
+        <span class="brand-star brand-star-two">✦</span>
+        <span class="brand-star brand-star-three">✧</span>
+      </div>
+      <div class="splash-water-ripples" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="intro-copy splash-brand-copy">
+        <p class="intro-eyebrow">YOUR CALMER SPACE</p>
+        <h1>SAHAAY</h1>
+        <p class="brand-promise">Support <span>•</span> Understand <span>•</span> Heal</p>
+      </div>
+      <div class="intro-loading">
+        <p>Preparing your safe space…</p>
+        <div class="intro-loading-dots"><i></i><i></i><i></i></div>
+      </div>
+    </article>
+
+    <article class="intro-page onboarding-page" data-intro-page="1">
+      <div class="onboarding-copy">
+        <p class="intro-eyebrow">A PLACE THAT FEELS LIKE YOURS</p>
+        <h1>Find Your<br><em>Safe Space</em></h1>
+        <p>A supportive journey for your mind, always with you.</p>
+      </div>
+      <div class="onboarding-art safe-space-art" aria-hidden="true">
+        <div class="lotus-halo"></div>
+        <div class="lotus lotus-large">
+          <i class="petal petal-c"></i><i class="petal petal-l1"></i><i class="petal petal-r1"></i>
+          <i class="petal petal-l2"></i><i class="petal petal-r2"></i><i class="lotus-base"></i>
+        </div>
+        <div class="art-ripple art-ripple-one"></div>
+        <div class="art-ripple art-ripple-two"></div>
+        <span class="art-spark art-spark-one">✦</span><span class="art-spark art-spark-two">✧</span>
+      </div>
+    </article>
+
+    <article class="intro-page onboarding-page" data-intro-page="2">
+      <div class="onboarding-copy">
+        <p class="intro-eyebrow">NO JUDGMENT, JUST SUPPORT</p>
+        <h1>Talk<br><em>Freely</em></h1>
+        <p>Share your thoughts, feelings and worries without judgment.</p>
+      </div>
+      <div class="onboarding-art talk-art" aria-hidden="true">
+        <div class="talk-glow"></div>
+        <div class="message-card message-one"><span>•••</span></div>
+        <div class="message-card message-two"><span>♡</span></div>
+        <div class="message-card message-three"><span>✦</span></div>
+        <div class="support-orbit"></div>
+        <span class="art-spark art-spark-one">✦</span><span class="art-spark art-spark-two">✦</span>
+      </div>
+    </article>
+
+    <article class="intro-page onboarding-page" data-intro-page="3">
+      <div class="onboarding-copy">
+        <p class="intro-eyebrow">GROW AT YOUR OWN PACE</p>
+        <h1>Small Steps,<br><em>Big Progress</em></h1>
+        <p>Track your mood, build healthy habits and feel more in control.</p>
+      </div>
+      <div class="onboarding-art progress-art" aria-hidden="true">
+        <div class="progress-glow"></div>
+        <div class="progress-card">
+          <div class="progress-card-top"><span>YOUR JOURNEY</span><b>↗</b></div>
+          <div class="progress-bars"><i></i><i></i><i></i><i></i></div>
+          <div class="progress-line"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="lotus lotus-small"><i class="petal petal-c"></i><i class="petal petal-l1"></i><i class="petal petal-r1"></i><i class="lotus-base"></i></div>
+        <span class="art-spark art-spark-one">✦</span><span class="art-spark art-spark-two">✧</span>
+      </div>
+    </article>
+  </div>
+
+  <div class="intro-controls" aria-hidden="true">
+    <div class="intro-dots" aria-label="Onboarding progress">
+      <i class="is-current"></i><i></i><i></i>
     </div>
-    <div class="splash-reflection" aria-hidden="true"><span></span><span></span></div>
-    <div class="splash-copy">
-      <h1 class="splash-title">SAHAAY</h1>
-      <p class="splash-tagline">Support • Understand • Heal</p>
-    </div>
-    <div class="splash-loading">
-      <p>Preparing your safe space…</p>
-      <div class="splash-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-    </div>
+    <button class="intro-next" id="introNext" type="button"><span>Next</span><i>→</i></button>
+    <p>Swipe to explore</p>
   </div>
 </section>
 
